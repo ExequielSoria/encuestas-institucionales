@@ -1,0 +1,41 @@
+version: '3'
+services:
+
+  php:
+    build: ./
+    container_name: php
+    ports:
+     - "${PHP_PORT}:80"
+    env_file: .env
+    volumes:
+     - ./public:/var/www/html:rw
+    networks:
+      - network1
+
+  mysql:
+    image: mysql:5.7
+    container_name: mysql
+    ports:
+     - "${MYSQL_PORT}:3309"
+    volumes:
+     - ./mysql:/var/lib/mysql:rw
+     - ./mysqld.cnf:/etc/mysql/mysql.conf.d/mysqld.cnf:rw
+     - ./files:/var/lib/mysql-files:rw
+     - ./DB_SURVEYS.sql:/docker-entrypoint-initdb.d/DB_SURVEYS.sql:rw
+    env_file: .env
+    networks:
+      - network1       
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: phpmyadmin
+    ports:
+     - "${PHPMYADMIN_PORT}:80"
+    env_file: .env
+    networks:
+      - network1
+
+networks:
+  network1:
+    name: ${DOCKER_NETWORK}
+#    external: true
