@@ -2,7 +2,7 @@ version: '3'
 services:
 
   php:
-    build: ./
+    build: ./docker
     container_name: php
     ports:
      - "${PHP_PORT}:80"
@@ -21,7 +21,7 @@ services:
      - ./mysql:/var/lib/mysql:rw
      - ./mysqld.cnf:/etc/mysql/mysql.conf.d/mysqld.cnf:rw
      - ./files:/var/lib/mysql-files:rw
-     - ./DB_SURVEYS.sql:/docker-entrypoint-initdb.d/DB_SURVEYS.sql:rw
+     - ./db/DB_SURVEYS.sql:/docker-entrypoint-initdb.d/DB_SURVEYS.sql:rw
     env_file: .env
     networks:
       - network1       
