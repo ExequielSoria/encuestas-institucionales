@@ -2,7 +2,7 @@ version: '3'
 services:
 
   php:
-    build: ./docker
+    build: ./
     container_name: php
     ports:
      - "${PHP_PORT}:80"
@@ -16,13 +16,18 @@ services:
     image: mysql:5.7
     container_name: mysql
     ports:
-     - "${MYSQL_PORT}:3309"
+     - "${MYSQL_PORT}:3306"
     volumes:
      - ./mysql:/var/lib/mysql:rw
      - ./mysqld.cnf:/etc/mysql/mysql.conf.d/mysqld.cnf:rw
      - ./files:/var/lib/mysql-files:rw
      - ./db/DB_SURVEYS.sql:/docker-entrypoint-initdb.d/DB_SURVEYS.sql:rw
     env_file: .env
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASS}
+      MYSQL_DATABASE: ${DATABASE_NAME}
     networks:
       - network1       
 
@@ -32,6 +37,8 @@ services:
     ports:
      - "${PHPMYADMIN_PORT}:80"
     env_file: .env
+    environment:
+      PMA_HOST: ${PMA_HOST}
     networks:
       - network1
 

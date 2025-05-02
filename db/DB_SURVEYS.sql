@@ -1,6 +1,6 @@
 -- Crear la base de datos
-CREATE DATABASE IF NOT EXISTS BD_SURVEYS;
-USE BD_SURVEYS;
+CREATE DATABASE IF NOT EXISTS DB_SURVEYS;
+USE DB_SURVEYS;
 
 -- Tabla de usuarios (admin o creadores de encuestas)
 CREATE TABLE USERS (
