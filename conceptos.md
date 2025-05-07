@@ -260,3 +260,15 @@ Crea una encuesta y rellena los campos, estos se guardaran en la base de datos p
 
 
 Login: El login pedira 2 datos para ingresar, siendo estos el DNI del estudiante y su LEGAJO. Una vez ingresado ya podra votar en las encuestas disponibles.
+
+
+LOGICA:
+
+Cuando cualquier usuario ingresa en la web, lo primero que pide es logearse. Habria 2 logins, uno para votantes (estudiantes con una BD distinta) y otra para creadores/admin(Profes o usuarios que puedan crear encuestas, BD del proyecto).
+
+Una vez ingresado, es redirigido al inicio, donde se muestran las encuestas. y dependiendo del rol del usuario, tendra las opciones para votar y/o ver los resultados o editar/borrar encuestas si es que tiene rol de creador de dicha encuesta o rol de administrador.
+
+Roles:
+Administrador: Podra crear/editar/borrar usuarios con rol de creadores, editar/borrar encuestas ajenas.
+Creador: Podra crear encuestas y editar/borrar las que sean de su pertenencia.
+Usuario: Podra solamente votar en encuestas y ver los resultados si esta permitido.
