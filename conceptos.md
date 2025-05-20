@@ -1,22 +1,14 @@
 # Sistema de Encuestas Institucionales #
-Este es un sistema donde los directivos podran crear encuestas dirigidas a estudiantes dentro de un instituto.
+Este es un sistema donde ciertos usuarios podran crear encuestas dirigidas a estudiantes dentro de un instituto.
 
-RECORDATORIO: Hacer la validacion de usuarios permitidos separado del codigo para hacerlo mas universal
-
-
-- Tener en cuenta las validaciones de usuarios fuera del terciario/institucion
 
 ## Funcionamiento ADMIN ##
 
-En el inicio se veran todas las encuestas disponibles, prioritariamente las que esten activas, seguidas por las inactivas. 
+En el inicio se veran todas las encuestas disponibles, prioritariamente las que esten activas, seguidas por las inactivas y luego ordenadas por recientes.
+ 
 Opcion para crear encuesta en otra pestaña.
 
 Cada tarjeta de encuesta mostrara opciones a elegir sobre esa encuesta, tales como...
-
-Editar:
-
-
-Ver encuesta: Se podran ver las encuestas de forma grafica
 
 
 Los `directivos` veran un menu con distintas operaciones sobre las encuestas, tales como ver, crear, editar o borrar una encuesta.
@@ -262,7 +254,7 @@ Crea una encuesta y rellena los campos, estos se guardaran en la base de datos p
 Login: El login pedira 2 datos para ingresar, siendo estos el DNI del estudiante y su LEGAJO. Una vez ingresado ya podra votar en las encuestas disponibles.
 
 
-LOGICA:
+# LOGICA #
 
 Cuando cualquier usuario ingresa en la web, lo primero que pide es logearse. Habria 2 logins, uno para votantes (estudiantes con una BD distinta) y otra para creadores/admin(Profes o usuarios que puedan crear encuestas, BD del proyecto).
 
@@ -272,3 +264,7 @@ Roles:
 Administrador: Podra crear/editar/borrar usuarios con rol de creadores, editar/borrar encuestas ajenas.
 Creador: Podra crear encuestas y editar/borrar las que sean de su pertenencia.
 Usuario: Podra solamente votar en encuestas y ver los resultados si esta permitido.
+
+
+RECORDATORIO: Hacer la validacion de usuarios permitidos separado del codigo para hacerlo mas universal
+- Tener en cuenta las validaciones de usuarios fuera del terciario/institucion

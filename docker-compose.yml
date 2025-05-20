@@ -9,6 +9,7 @@ services:
     env_file: .env
     volumes:
      - ./:/var/www/html:rw
+    command: php -S 0.0.0.0:80 ./core/routerScript.php
     networks:
       - network1
 
