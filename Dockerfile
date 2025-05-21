@@ -1,5 +1,11 @@
 FROM php:7.4-apache
 
+#Librerias necesarias para composer
+RUN apt-get update && apt-get install -y curl unzip
+# Descargo e instalo Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+#Librerias necesarias para cosas de base de datos
 RUN apt-get update && apt-get install --yes --no-install-recommends \
     zlib1g-dev \
     libzip-dev \
