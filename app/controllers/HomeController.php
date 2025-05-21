@@ -14,9 +14,9 @@ class HomeController {
 
 
     
-    public function saludo($gente) {
+    public function saludo() {
         // Cargar la vista de inicio
-        echo "hola".$gente;
+        echo "hola";
     }
 
 }
