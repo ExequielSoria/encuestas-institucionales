@@ -2,7 +2,7 @@
 // Conexión a la base de datos interna
 
 //Libreria para leer el .env
-require '../vendor/autoload.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
 //Movida rara de rutas para encontrar el .env
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');

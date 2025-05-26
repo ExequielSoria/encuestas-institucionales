@@ -9,12 +9,14 @@
     
 <h2>Iniciar Sesión</h2>
 <form method="POST" action="?controller=users&action=login">
-    <input type="text" name="legajo" placeholder="Legajo"><br>
-    <input type="password" name="dni" placeholder="DNI"><br>
-    Creador<input type="checkbox" name="creator" placeholder="DNI"><br>
+    <input type="text" name="username" placeholder="Usuario o Legajo"><br>
+    <input type="password" name="password" placeholder="Contraseña"><br>
+    Creador<input type="checkbox" name="isCreator"><br>
     <button type="submit">Ingresar</button>
 </form>
 
 
 </body>
 </html>
+
+<?php
