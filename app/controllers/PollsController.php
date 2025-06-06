@@ -1,9 +1,15 @@
 <?php
 
+require_once __DIR__ . '/../models/PollsModel.php';
+
+
+
 class PollsController {
 
     //Aca valido que todos los datos del formulario esten bien antes de crear la encuesta
     public function validatePoll() {
+
+        
 
         //Guardar el form en la sesion
         if ( isset($_POST['saveForm']) ) {
@@ -63,12 +69,12 @@ class PollsController {
         }
 
         //APARIENCIA
-        if ( isset($_POST['color']) && ($_POST['color'] != '') ) {
-            //echo 'color valido';
-            $data['color'] = $_POST['color'];
+        if ( isset($_POST['colour']) && ($_POST['colour'] != '') ) {
+            //echo 'colour valido';
+            $data['colour'] = $_POST['colour'];
             $_SESSION['counter']++;
         } else {
-            $data['color'] = "1"; // Por defecto es el color 1
+            $data['colour'] = "1"; // Por defecto es el colour 1
             $_SESSION['counter']++;
 
         }
@@ -77,10 +83,10 @@ class PollsController {
         //CARRERAS
         if ( isset($_POST['careers']) && is_array($_POST['careers']) && count($_POST['careers']) > 0 ) {
             //echo 'carreras validas';
-            $data['careers'] = $_POST['careers'];
+            $data['careers'] =  json_encode( $_POST['careers'] );
             $_SESSION['counter']++;
         } else {
-            $data['careers'] = "ALL";
+            $data['careers'] = json_encode(["ALL"]);
             $_SESSION['counter']++;
 
             
@@ -89,9 +95,9 @@ class PollsController {
         //AÑOS
         if ( isset($_POST['years']) && is_array($_POST['years']) && count($_POST['years']) > 0 ) {
             //echo 'años validos';
-            $data['years'] = $_POST['years'];
+            $data['years'] = json_encode( $_POST['years'] ) ;
         } else {
-            $data['years'] = "3";
+            $data['years'] = json_encode(["3"]);
         }
 
 
@@ -160,11 +166,12 @@ class PollsController {
         
     */
 
-        if ($_SESSION['counter'] == 6) {
+        if ($_SESSION['counter'] == 6  /*$_SESSION['role'] == "ADMIN"*/)  {
             // Si todos los campos estan completos, creo la encuesta
             //echo "Encuesta validada";
 
-            print_r  ($data) ;
+            $newPoll = PollsModel::createPoll($data);
+            var_dump($newPoll);
             //$this->cleanDataForm();
 
 
@@ -185,7 +192,7 @@ class PollsController {
         $startDate = $_POST['startDate'] ?? null;
         $endDate = $_POST['endDate'] ?? null;
         $visibility = $_POST['visibility'] ?? null;
-        $color = $_POST['color'] ?? null;    
+        $colour = $_POST['colour'] ?? null;    
         
         $careers = $_POST['careers'] ?? []; // array
         $years = $_POST['years'] ?? [];     // array
@@ -248,7 +255,7 @@ class PollsController {
             'startDate' => $startDate,
             'endDate' => $endDate,
             'visibility' => $visibility,
-            'color' => $color,
+            'colour' => $colour,
             'careers' => $careers,
             'years' => $years,
         ];
@@ -259,10 +266,6 @@ class PollsController {
     }
     
     */
-
-    public function createPoll() {
-        var_dump($_POST);
-    }
 
 }
 

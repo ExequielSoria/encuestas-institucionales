@@ -53,13 +53,13 @@ $years = $form_data['years'] ?? [];
 
     <h3>Apariencia</h3>
 
-    <label for="color">Color de la encuesta</label>
-    <select id="color" name="color">
-      <option value="1" <?= ($form_data['color'] ?? '') === '1' ? 'selected' : '' ?>>Opción 1</option>
-      <option value="2" <?= ($form_data['color'] ?? '') === '2' ? 'selected' : '' ?>>Opción 2</option>
-      <option value="3" <?= ($form_data['color'] ?? '') === '3' ? 'selected' : '' ?>>Opción 3</option>
-      <option value="4" <?= ($form_data['color'] ?? '') === '4' ? 'selected' : '' ?>>Opción 4</option>
-      <option value="5" <?= ($form_data['color'] ?? '') === '5' ? 'selected' : '' ?>>Opción 5</option>
+    <label for="colour">Color de la encuesta</label>
+    <select id="colour" name="colour">
+      <option value="1" <?= ($form_data['colour'] ?? '') === '1' ? 'selected' : '' ?>>Opción 1</option>
+      <option value="2" <?= ($form_data['colour'] ?? '') === '2' ? 'selected' : '' ?>>Opción 2</option>
+      <option value="3" <?= ($form_data['colour'] ?? '') === '3' ? 'selected' : '' ?>>Opción 3</option>
+      <option value="4" <?= ($form_data['colour'] ?? '') === '4' ? 'selected' : '' ?>>Opción 4</option>
+      <option value="5" <?= ($form_data['colour'] ?? '') === '5' ? 'selected' : '' ?>>Opción 5</option>
     </select>
 
 
