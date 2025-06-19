@@ -22,7 +22,7 @@ $years = $form_data['years'] ?? [];
 <body>
     
   
-  <form action="?controller=Polls&action=validatePoll" method="POST">
+  <form action="?controller=Polls&action=createPoll" method="POST">
   
     <h2>Crear nueva encuesta</h2>
   
@@ -135,7 +135,7 @@ $years = $form_data['years'] ?? [];
     <br>
     <br>
 
-    <button type="submit">Crear encuesta</button>
+    <button type="submit" name="sendForm" >Crear encuesta</button>
     </form>
 
 

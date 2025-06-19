@@ -5,9 +5,16 @@ require_once './db/internDB.php';
 //Clase encargada de la gestion de las encuestas en la base de datos
 class PollsModel {
 
+    public function getPollById($id){
+        global $pdo;
+        $sql = "SELECT * FROM POLLS WHERE ID_POLL = ?";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([$id]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
     public static function createPoll($data) {
-        var_dump($data);
-        echo "Creando encuesta...";
+        //echo "Creando encuesta...";
         global $pdo;
 
         // Preparo la sentencia sql

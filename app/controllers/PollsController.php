@@ -2,40 +2,97 @@
 
 require_once __DIR__ . '/../models/PollsModel.php';
 
-
-
 class PollsController {
 
-    //Aca valido que todos los datos del formulario esten bien antes de crear la encuesta
+    //El formulario de crear encuesta apunta a esta funcion
+    public function createPoll(){
+
+        //Valido la encuesta y la guardo
+        $currentPoll = $this->validatePoll();
+
+        var_dump($currentPoll);
+
+        //Si la encuesta es valida, la guardo en la base de datos y redirijo con el id de la encuesta creada
+        if ($currentPoll != false){
+            $pollId = PollsModel::createPoll($currentPoll);
+
+            echo '<script>window.location.href="?controller=polls&action=prepareSelections&id=' . $pollId . '";</script>';
+
+        } else {
+            echo '<script>window.location.href="?controller=views&action=createPoll";</script>';
+        }
+    }
+
+
+    //Funcion que 
+    public function prepareSelections($pollId){
+
+        echo "Preparando elecciones...";
+
+        //verifica el dueño y guarda la encuesta
+        $poll = $this->verifyOwner();
+
+        //Si es el dueño lo redirijo a la vista de añadir selecciones y paso la encuesta por POST
+        if ($poll != false) {
+            $_SESSION['pollData'] = $poll;
+            echo '<script>window.location.href="?controller=views&action=AddSelections&id=' . $pollId . '";</script>';
+        }
+    }
+
+    //Funcion a la que apunta el formulario de añadir selecciones
+    public function addSelection(){
+
+        //Valida las selecciones
+
+        //Las carga a la base de datos
+
+        //Redirige a la vista de VER la encuesta con el id por get
+        //O sea, http://localhost:8085/index.php?controller=polls&action=viewPoll&id=X
+
+    }
+
+    //Funcion encargada de verificar si el usuario es el dueño de la encuesta
+    public function verifyOwner(){
+        if ( isset($_GET['id']) && is_numeric($_GET['id']) ) {
+
+            //Extraigo el id que viene por GET
+            $pollId = $_GET['id'];
+            $pollData = PollsModel::getPollById($pollId);
+
+            //Doy luz verde si el usuario es el dueño de la encuesta o es admin
+            if( $pollData['ID_USER'] == $_SESSION['id'] || $_SESSION['role'] == "ADMIN" ) {
+                return $pollData;
+            } else {
+                return false;
+            }
+        }
+    }
+
+    //Aca valido que los datos del formulario esten bien
     public function validatePoll() {
-
         
-
-        //Guardar el form en la sesion
+        //Guarda el form en la sesion si esta marcada la opcion
         if ( isset($_POST['saveForm']) ) {
-
             $_SESSION['form_data'] = $_POST;
 
             //redirijo a la vista de crear encuesta
            echo "<script>window.location.href='?controller=views&action=CreatePoll';</script>";
-
         }
 
-
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset( $_POST['saveForm'] ) ) {
+        //Guardo el form en la sesion al enviarse el formulario
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset( $_POST['sendForm'] ) ) {
             $_SESSION['form_data'] = $_POST;
         
         }
-        //var_dump($_POST);  
 
         //Contador de validaciones
         $_SESSION['counter'] = 0;
 
         //TITULO
         if ( isset($_POST['title']) && ($_POST['title'] != '') && strlen($_POST['title']) > 0 && strlen($_POST['title']) < 100  ) {
-            // Si todos los campos estan completos, creo la encuesta
-            //echo 'titulo valido';
+            // Si todos los campos estan bien, lo añado al array de datos y sumo el contador
             $data['title'] = $_POST['title'];
+
             $_SESSION['counter']++;
         }else{
             // Si no, muestro un mensaje de error
@@ -44,9 +101,9 @@ class PollsController {
 
         //DESCRIPCION
         if ( strlen($_POST['description']) < 255  ) {
-            // Si todos los campos estan completos, creo la encuesta
-            //echo 'descripcion valida';
+            // Si todos los campos estan bien, lo añado al array de datos y sumo el contador
             $data['description'] = $_POST['description'];
+
             $_SESSION['counter']++;
         }else{
             // Si no, muestro un mensaje de error
@@ -58,10 +115,10 @@ class PollsController {
         $endDate = new DateTime($_POST['endDate']);
 
         if ( isset($_POST['startDate']) && isset($_POST['endDate']) && $startDate < $endDate ) {
-            // Si todos los campos estan completos, creo la encuesta
-            //echo 'fechas validas';
+            // Si todos los campos  estan bien, lo añado al array de datos y sumo el contador
             $data['startDate'] = $_POST['startDate'];
             $data['endDate'] = $_POST['endDate'];
+
             $_SESSION['counter']++;
         } else {
             // Si no, muestro un mensaje de error
@@ -70,8 +127,9 @@ class PollsController {
 
         //APARIENCIA
         if ( isset($_POST['colour']) && ($_POST['colour'] != '') ) {
-            //echo 'colour valido';
+            //Si el color es valido, lo añado al array de datos y sumo el contador
             $data['colour'] = $_POST['colour'];
+
             $_SESSION['counter']++;
         } else {
             $data['colour'] = "1"; // Por defecto es el colour 1
@@ -79,11 +137,11 @@ class PollsController {
 
         }
 
-
         //CARRERAS
         if ( isset($_POST['careers']) && is_array($_POST['careers']) && count($_POST['careers']) > 0 ) {
-            //echo 'carreras validas';
+            //Si las carreras son validas, las añado al array de datos y sumo el contador
             $data['careers'] =  json_encode( $_POST['careers'] );
+
             $_SESSION['counter']++;
         } else {
             $data['careers'] = json_encode(["ALL"]);
@@ -94,21 +152,28 @@ class PollsController {
 
         //AÑOS
         if ( isset($_POST['years']) && is_array($_POST['years']) && count($_POST['years']) > 0 ) {
-            //echo 'años validos';
-            $data['years'] = json_encode( $_POST['years'] ) ;
+            //Si los años son validos, los añado al array de datos y sumo el contador
+            $data['years'] = json_encode( $_POST['years'] );
+
+            $_SESSION['counter']++;
+
         } else {
             $data['years'] = json_encode(["3"]);
+            $_SESSION['counter']++;
+
         }
-
-
-        //VOTACIONES
-
 
         //MULTIPLE CHOICE
         if ( isset($_POST['multipleChoice']) && ($_POST['multipleChoice'] != '') ) {
+            // Si el campo multipleChoice esta marcado, lo añado al array de datos y sumo el contador
             $data['multipleChoice'] = 1;
+
+            $_SESSION['counter']++;
+
         } else {
             $data['multipleChoice'] = 0; // Por defecto es 0
+            $_SESSION['counter']++;
+
         }
 
         //VISIBILIDAD
@@ -121,151 +186,20 @@ class PollsController {
             $_SESSION['counter']++;
 
         }
-
-
-    /*
-
-        //Candidatos y opciones
-        if ( isset($_POST['options']) || isset($_POST['candidates']) ){
-            //echo 'alguna de las 2 está seteada';
-            $_SESSION['counter']++;
-        } else {
-            // Si no, muestro un mensaje de error
-            //echo "Candidatos no validos";
-        }
-
-
-        //candidatos
-        for ($i = 1; $i <= 10; $i++) {
-            if ( isset($_POST['candidate' . $i]) && isset($_POST['candidate' . $i]['name']) && isset($_POST['candidate' . $i]['description']) ) {
-                if ( strlen($_POST['candidate' . $i]['name']) > 0 && strlen($_POST['candidate' . $i]['name']) < 100 && strlen($_POST['candidate' . $i]['description']) < 255 ) {
-                    //echo 'candidato ' . $i . ' valido';
-                } else {
-                        echo "Candidato " . $i . " no valido";
-                    
-                    $_SESSION['counter'] = 0;
-
-                }
-            }
-        }
-
-
-        //opciones
-        for ($i = 1; $i <= 10; $i++) {
-            if ( isset($_POST['option' . $i]) && isset($_POST['option' . $i]['name']) && isset($_POST['option' . $i]['description']) ) {
-                if ( strlen($_POST['option' . $i]['name']) > 0 && strlen($_POST['option' . $i]['name']) < 100 && strlen($_POST['option' . $i]['description']) < 255 ) {
-                    //echo 'opcion ' . $i . ' valida';
-                } else {
-                    echo "Opcion " . $i . " no valida";
-
-                    $_SESSION['counter'] = 0;
-
-                }
-            }
-        }
         
-    */
-
-        if ($_SESSION['counter'] == 6  /*$_SESSION['role'] == "ADMIN"*/)  {
-            // Si todos los campos estan completos, creo la encuesta
-            //echo "Encuesta validada";
-
-            $newPoll = PollsModel::createPoll($data);
-            var_dump($newPoll);
-            //$this->cleanDataForm();
-
+        //VALIDACION FINAL, SI TODO ESTA BIEN DEVUELVO DATA
+        if ($_SESSION['counter'] == 8 && isset($_POST['sendForm']) && ($_SESSION['role'] == "ADMIN"  || $_SESSION['role'] == "CREATOR") ) {
 
             // Limpio los datos del formulario 
-            //unset($_SESSION['form_data']);
+            unset($_SESSION['form_data']);
+            
+            return $data;
 
         } else {
             // Si no, muestro un mensaje de error
             echo "Algo salio mal, no se creo la encuesta";
-            //unset($_SESSION['form_data']);
+            return false;
         }
     }
-
-    /*
-    public function cleanDataForm() {
-        $title = $_POST['title'] ?? null;
-        $description = $_POST['description'] ?? null;
-        $startDate = $_POST['startDate'] ?? null;
-        $endDate = $_POST['endDate'] ?? null;
-        $visibility = $_POST['visibility'] ?? null;
-        $colour = $_POST['colour'] ?? null;    
-        
-        $careers = $_POST['careers'] ?? []; // array
-        $years = $_POST['years'] ?? [];     // array
-
-        /*
-        $candidates = [];
-        foreach ($_POST as $key => $value) {
-            if (preg_match('/^candidate(\d+)$/', $key, $matches)) {
-                $index = $matches[1];
-                $candidate = $_POST[$key];
-        
-                // Procesar archivo de imagen
-                $photoName = null;
-                if (isset($_FILES[$key]['photo']) && $_FILES[$key]['photo']['error'] === UPLOAD_ERR_OK) {
-                    $photoTmp = $_FILES[$key]['photo']['tmp_name'];
-                    $photoName = basename($_FILES[$key]['photo']['name']);
-                    move_uploaded_file($photoTmp, "uploads/$photoName");
-                }
-        
-                $candidates[] = [
-                    'name' => $candidate['name'] ?? '',
-                    'description' => $candidate['description'] ?? '',
-                    'age' => $candidate['age'] ?? '',
-                    'career' => $candidate['career'] ?? '',
-                    'photo' => $photoName,
-                ];
-            }
-        }
-
-        $candidates = $_POST['candidates'] ?? [];
-        // Y las fotos las manejás así:
-        foreach ($_FILES['candidates']['tmp_name'] as $i => $fields) {
-            if ($_FILES['candidates']['error'][$i]['photo'] === UPLOAD_ERR_OK) {
-                $tmpName = $_FILES['candidates']['tmp_name'][$i]['photo'];
-                $photoName = $_FILES['candidates']['name'][$i]['photo'];
-                move_uploaded_file($tmpName, "uploads/$photoName");
-                $candidates[$i]['photo'] = $photoName;
-            }
-        }
-
-
-        $options = $_POST['options'] ?? [];
-
-        foreach ($_FILES['options']['tmp_name'] as $i => $fields) {
-            if ($_FILES['options']['error'][$i]['photo'] === UPLOAD_ERR_OK) {
-                $tmpName = $_FILES['options']['tmp_name'][$i]['photo'];
-                $photoName = $_FILES['options']['name'][$i]['photo'];
-                move_uploaded_file($tmpName, "uploads/$photoName");
-                $options[$i]['photo'] = $photoName;
-            }
-        }
-        
-        
-
-        
-
-        $data = [
-            'title' => $title,
-            'description' => $description,
-            'startDate' => $startDate,
-            'endDate' => $endDate,
-            'visibility' => $visibility,
-            'colour' => $colour,
-            'careers' => $careers,
-            'years' => $years,
-        ];
-
-        var_dump($data);
-
-
-    }
-    
-    */
-
 }
 
