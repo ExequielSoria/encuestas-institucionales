@@ -16,7 +16,7 @@ class PollsController {
         if ($currentPoll != false){
             $pollId = PollsModel::createPoll($currentPoll);
 
-            echo '<script>window.location.href="?controller=polls&action=prepareSelections&id=' . $pollId . '";</script>';
+            echo '<script>window.location.href="?controller=polls&action=prepareElections&id=' . $pollId . '";</script>';
 
         } else {
             echo '<script>window.location.href="?controller=views&action=createPoll";</script>';
@@ -24,25 +24,184 @@ class PollsController {
     }
 
 
-    //Funcion que 
-    public function prepareSelections($pollId){
+    //Funcion que debe ser llamada para cargar los datos de una encuesta antes de añadirle opciones
+    public function prepareElections($pollId){
 
         echo "Preparando elecciones...";
 
-        //verifica el dueño y guarda la encuesta
+        //verifica el dueño y guarda la encuesta en la variable
         $poll = $this->verifyOwner();
 
         //Si es el dueño lo redirijo a la vista de añadir selecciones y paso la encuesta por POST
         if ($poll != false) {
             $_SESSION['pollData'] = $poll;
-            echo '<script>window.location.href="?controller=views&action=AddSelections&id=' . $pollId . '";</script>';
+            echo '<script>window.location.href="?controller=views&action=AddElections&id=' . $pollId . '";</script>';
         }
     }
 
-    //Funcion a la que apunta el formulario de añadir selecciones
-    public function addSelection(){
+    //Funcion a la que apunta el formulario de añadir candidatos. DEBE ESTAR PREVIAMENTE CARGADA CON prepareElections
+    public function validateCandidate(){
 
-        //Valida las selecciones
+        //Guardo el form en la sesion al enviarse el formulario
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset( $_POST['sendCandidate'] ) ) {
+            $_SESSION['candidateData'] = $_POST;        
+        }
+
+        //Contador de validaciones
+        $_SESSION['greenFlags'] = 0;
+
+        //NOMBRE
+        if ( isset($_POST['candidateName']) && ($_POST['candidateName'] != '') && strlen($_POST['candidateName']) > 0 && strlen($_POST['optionTitle']) < 100  ) {
+            // Si todos los campos estan bien, lo añado al array de datos y sumo el contador
+            $candidateData['candidateName'] = $_POST['candidateName'];
+
+            $_SESSION['greenFlags']++;
+        }else{
+            // Si no, muestro un mensaje de error
+            echo "Nombre de candidato no valido";
+        }
+
+        //INFO
+        if ( strlen($_POST['candidateInfo']) < 255  ) {
+            // Si todos los campos estan bien, lo añado al array de datos y sumo el contador
+            $candidateData['candidateInfo'] = $_POST['candidateInfo'];
+
+            $_SESSION['greenFlags']++;
+        }else{
+            // Si no, muestro un mensaje de error
+            echo "Descripcion de candidato no valido";
+        }
+
+        //EDAD
+        if ( isset($_POST['candidateAge']) && is_numeric($_POST['candidateAge']) && $_POST['candidateAge'] > 0 && $_POST['candidateAge'] < 126 ) {
+            // Si todos los campos estan bien, lo añado al array de datos y sumo el contador
+            $candidateData['candidateAge'] = $_POST['candidateAge'];
+
+            $_SESSION['greenFlags']++;
+        }else{
+            // Si no, muestro un mensaje de error
+            echo "Edad de candidato no valida";
+        }
+
+        //CARRERA
+        if ( strlen($_POST['candidateCareer']) < 20  ) {
+            // Si todos los campos estan bien, lo añado al array de datos y sumo el contador
+            $candidateData['candidateCareer'] = $_POST['candidateCareer'];
+
+            $_SESSION['greenFlags']++;
+        }else{
+            // Si no, muestro un mensaje de error
+            echo "Descripcion de candidato no valido";
+        }
+
+
+
+        //ID DE LA ENCUESTA
+        if( isset( $_SESSION['pollData'] ) ){
+            $pollData = $_SESSION['pollData'];            
+            $idCreatedPoll = $pollData['ID_POLL'];
+
+            $candidateData['idPoll'] = $idCreatedPoll;
+            $_SESSION['greenFlags']++;
+        }
+
+
+        //VALIDACION FINAL, SI TODO ESTA BIEN DEVUELVO DATA
+        if ($_SESSION['greenFlags'] == 5 && isset($_POST['sendCandidate']) && ($_SESSION['role'] == "ADMIN"  || $_SESSION['role'] == "CREATOR") ) {
+
+            // Limpio los datos del formulario 
+            //unset($_SESSION['candidateData']);
+            
+            //var_dump($candidateData);
+
+            $createdCandidate = PollsModel::createCandidate($candidateData);
+            
+            echo '<script> alert("Se añadio correctamente al candidato"); </script>';
+
+            //var_dump($createdCandidate);
+            echo '<script>window.location.href="?controller=polls&action=prepareElections&id=' . $idCreatedPoll . '";</script>';
+
+        } else {
+            // Si no, muestro un mensaje de error
+            echo "Algo salio mal, no se añadio la opcion";
+            echo '<script> alert("NO se añadio al candidato"); </script>';
+            echo '<script>window.location.href="?controller=polls&action=prepareElections&id=' . $idCreatedPoll . '";</script>';
+
+            return false;
+        }
+
+        //Las carga a la base de datos
+
+        //Redirige a la vista de VER la encuesta con el id por get
+        //O sea, http://localhost:8085/index.php?controller=polls&action=viewPoll&id=X
+
+    }
+
+    //Funcion a la que apunta el formulario de añadir selecciones. DEBE ESTAR PREVIAMENTE CARGADA CON prepareElections
+    public function validateOption(){
+
+        //Guardo el form en la sesion al enviarse el formulario
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset( $_POST['sendOption'] ) ) {
+            $_SESSION['optionData'] = $_POST;        
+        }
+
+        //Contador de validaciones
+        $_SESSION['greenFlags'] = 0;
+
+        //TITULO
+        if ( isset($_POST['optionTitle']) && ($_POST['optionTitle'] != '') && strlen($_POST['optionTitle']) > 0 && strlen($_POST['optionTitle']) < 100  ) {
+            // Si todos los campos estan bien, lo añado al array de datos y sumo el contador
+            $data['optionTitle'] = $_POST['optionTitle'];
+
+            $_SESSION['greenFlags']++;
+        }else{
+            // Si no, muestro un mensaje de error
+            echo "Nombre de encuesta no valido";
+        }
+
+        //INFO
+        if ( strlen($_POST['optionInfo']) < 255  ) {
+            // Si todos los campos estan bien, lo añado al array de datos y sumo el contador
+            $data['optionInfo'] = $_POST['optionInfo'];
+
+            $_SESSION['greenFlags']++;
+        }else{
+            // Si no, muestro un mensaje de error
+            echo "Descripcion de encuesta no valido";
+        }
+
+        //ID DE LA ENCUESTA
+        if( isset( $_SESSION['pollData'] ) ){
+            $pollData = $_SESSION['pollData'];            
+            $idCreatedPoll = $pollData['ID_POLL'];
+
+            $data['idPoll'] = $idCreatedPoll;
+            $_SESSION['greenFlags']++;
+        }
+
+
+        //VALIDACION FINAL, SI TODO ESTA BIEN DEVUELVO DATA
+        if ($_SESSION['greenFlags'] == 3 && isset($_POST['sendOption']) && ($_SESSION['role'] == "ADMIN"  || $_SESSION['role'] == "CREATOR") ) {
+
+            // Limpio los datos del formulario 
+            unset($_SESSION['optionData']);
+            
+            $createdOption = PollsModel::createOption($data);
+            
+            echo 'Opcion añadida correctamente';
+            echo '<script> alert("Se añadio correctamente la opcion"); </script>';
+            echo '<script>window.location.href="?controller=polls&action=prepareElections&id=' . $idCreatedPoll . '";</script>';
+
+
+
+        } else {
+            // Si no, muestro un mensaje de error
+            echo "Algo salio mal, no se añadio la opcion";
+            echo '<script> alert("No se añadio la opcion"); </script>';
+            echo '<script>window.location.href="?controller=polls&action=prepareElections&id=' . $idCreatedPoll . '";</script>';
+
+            return false;
+        }
 
         //Las carga a la base de datos
 
@@ -63,12 +222,17 @@ class PollsController {
             if( $pollData['ID_USER'] == $_SESSION['id'] || $_SESSION['role'] == "ADMIN" ) {
                 return $pollData;
             } else {
+
+                echo " <script> alert('No tienes permiso para acceder a esta encuesta'); </script>";
+                echo '<script>window.location.href="?controller=views&action=home";</script>';
+
+
                 return false;
             }
         }
     }
 
-    //Aca valido que los datos del formulario esten bien
+    //Aca valido que los datos del formulario esten bien y devuelvo 
     public function validatePoll() {
         
         //Guarda el form en la sesion si esta marcada la opcion
@@ -89,9 +253,9 @@ class PollsController {
         $_SESSION['counter'] = 0;
 
         //TITULO
-        if ( isset($_POST['title']) && ($_POST['title'] != '') && strlen($_POST['title']) > 0 && strlen($_POST['title']) < 100  ) {
+        if ( isset($_POST['optionTitle']) && ($_POST['optionTitle'] != '') && strlen($_POST['optionTitle']) > 0 && strlen($_POST['optionTitle']) < 100  ) {
             // Si todos los campos estan bien, lo añado al array de datos y sumo el contador
-            $data['title'] = $_POST['title'];
+            $data['optionTitle'] = $_POST['optionTitle'];
 
             $_SESSION['counter']++;
         }else{
@@ -100,9 +264,9 @@ class PollsController {
         }
 
         //DESCRIPCION
-        if ( strlen($_POST['description']) < 255  ) {
+        if ( strlen($_POST['optionInfo']) < 255  ) {
             // Si todos los campos estan bien, lo añado al array de datos y sumo el contador
-            $data['description'] = $_POST['description'];
+            $data['optionInfo'] = $_POST['optionInfo'];
 
             $_SESSION['counter']++;
         }else{

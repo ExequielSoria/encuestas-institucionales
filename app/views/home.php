@@ -5,3 +5,7 @@
 <p>Identificado como <?php echo $_SESSION['role']; ?> </p>
 
 <a href="?controller=users&action=endSession">Cerrar sesión</a>
+
+<p>?controller=polls&action=prepareElections&id=8</p>
+
+<h2>Encuestas</h2>

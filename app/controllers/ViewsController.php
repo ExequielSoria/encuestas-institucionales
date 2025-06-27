@@ -49,12 +49,12 @@ class ViewsController {
 
     }
 
-    public function addSelections() {
+    public function addElections() {
         // Cargar la vista de inicio
 
         if ( isset($_SESSION['role']) && $_SESSION['role'] != null && ( $_SESSION['role'] == "ADMIN" || $_SESSION['role'] == "CREATOR" ) ) {
             //Si el usuario esta logueado, lo redirijo al creador de selecciones
-            include_once './app/views/addSelections.php';
+            include_once './app/views/addElections.php';
         } else {
             //Si el usuario NO esta logueado, lo redirijo al login
             echo "Necesitas estar logeado para entrar";

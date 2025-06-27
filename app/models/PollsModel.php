@@ -38,4 +38,48 @@ class PollsModel {
         return $pdo->lastInsertId();
 
     }
+
+    public static function createCandidate($candidateData) {
+        //echo "Creando Candidato...";
+        global $pdo;
+
+
+        // Preparo la sentencia sql
+        $sql = "INSERT INTO CANDIDATES (NAME_CANDIDATE, INFO_CANDIDATE, ID_POLL, AGE_CANDIDATE, CAREER_CANDIDATE) VALUES (?, ?, ?, ?, ?)";
+        $stmt = $pdo->prepare($sql);
+
+        // Ejecuto con la data proporcionada
+        $stmt->execute([
+            $candidateData['candidateName'],
+            $candidateData['candidateInfo'],
+            $candidateData['idPoll'],
+            $candidateData['candidateAge'],
+            $candidateData['candidateCareer']
+        ]);
+
+        return $pdo->lastInsertId();
+
+    }
+
+
+    public static function createOption($data) {
+        //echo "Creando encuesta...";
+        global $pdo;
+
+        // Preparo la sentencia sql
+        $sql = "INSERT INTO OPTIONS (TITLE_OPTION, INFO_OPTION, ID_POLL) VALUES (?, ?, ?)";
+        $stmt = $pdo->prepare($sql);
+
+        // Ejecuto con la data proporcionada
+        $stmt->execute([
+            $data['optionTitle'],
+            $data['optionInfo'],
+            $data['idPoll']
+        ]);
+
+        return $pdo->lastInsertId();
+
+    }
+
+
 }
