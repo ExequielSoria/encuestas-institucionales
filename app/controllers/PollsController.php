@@ -16,9 +16,12 @@ class PollsController {
         if ($currentPoll != false){
             $pollId = PollsModel::createPoll($currentPoll);
 
+            echo "<script> alert('Encuesta creada con exito'); </script>";
             echo '<script>window.location.href="?controller=polls&action=prepareElections&id=' . $pollId . '";</script>';
 
         } else {
+            
+            echo "<script> alert('No se creo la encuesta, revisa los datos'); </script>";
             echo '<script>window.location.href="?controller=views&action=createPoll";</script>';
         }
     }
@@ -253,9 +256,9 @@ class PollsController {
         $_SESSION['counter'] = 0;
 
         //TITULO
-        if ( isset($_POST['optionTitle']) && ($_POST['optionTitle'] != '') && strlen($_POST['optionTitle']) > 0 && strlen($_POST['optionTitle']) < 100  ) {
+        if ( isset($_POST['title']) && ($_POST['title'] != '') && strlen($_POST['title']) > 0 && strlen($_POST['title']) < 100  ) {
             // Si todos los campos estan bien, lo añado al array de datos y sumo el contador
-            $data['optionTitle'] = $_POST['optionTitle'];
+            $data['title'] = $_POST['title'];
 
             $_SESSION['counter']++;
         }else{
@@ -264,9 +267,9 @@ class PollsController {
         }
 
         //DESCRIPCION
-        if ( strlen($_POST['optionInfo']) < 255  ) {
+        if ( strlen($_POST['description']) < 255  ) {
             // Si todos los campos estan bien, lo añado al array de datos y sumo el contador
-            $data['optionInfo'] = $_POST['optionInfo'];
+            $data['description'] = $_POST['description'];
 
             $_SESSION['counter']++;
         }else{

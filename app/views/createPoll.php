@@ -21,7 +21,8 @@ $years = $form_data['years'] ?? [];
 </head>
 <body>
     
-  
+<a href="?controller=views&action=home">Volver a inicio</a>  
+
   <form action="?controller=Polls&action=createPoll" method="POST">
   
     <h2>Crear nueva encuesta</h2>
