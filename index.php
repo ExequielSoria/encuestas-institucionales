@@ -7,6 +7,10 @@ session_start();
 $controller = $_GET['controller'] ?? 'users';
 $action = $_GET['action'] ?? 'login';
 
+// Capturo cualquier parametro extra con $_GET
+$params = $_GET;
+
+
 //Defino la ruta del controlador
 $controllerFile = './app/controllers/' . ucfirst($controller) . 'Controller.php';
 
@@ -22,7 +26,12 @@ if (file_exists($controllerFile)) {
 
     //Uso un metodo de la clase instanciada
     if (method_exists($instance, $action)) {
-        $instance->$action();
+        // Remuevo controller y action del array para quedarme solo con los parametros
+        unset($params['controller'], $params['action']);
+
+        // Llamo al metodo con los parametros
+        call_user_func_array([$instance, $action], $params);
+
     } else {
         echo "Acción '$action' no encontrada.";
     }
