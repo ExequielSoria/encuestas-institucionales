@@ -2,7 +2,21 @@
 
 require_once __DIR__ . '/../models/PollsModel.php';
 
+require_once __DIR__ . '/../controllers/UsersController.php';
+
 class PollsController {
+
+
+
+    //Funcion que trae todas las encuestas disponibles 
+    public function loadRecentPolls(){
+
+
+
+    }
+
+
+
 
     //El formulario de crear encuesta apunta a esta funcion
     public function createPoll(){

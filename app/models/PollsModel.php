@@ -81,5 +81,20 @@ class PollsModel {
 
     }
 
+    public function getOptionsByPollId($id){
+        global $pdo;
+        $sql = "SELECT * FROM OPTIONS WHERE ID_POLL = ?";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([$id]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getCandidatesByPollId($id){
+        global $pdo;
+        $sql = "SELECT * FROM CANDIDATES WHERE ID_POLL = ?";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([$id]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 
 }

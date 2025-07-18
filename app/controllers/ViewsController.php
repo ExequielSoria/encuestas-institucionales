@@ -1,6 +1,33 @@
 <?php
 
+require_once './app/models/PollsModel.php';
+
+require_once './app/controllers/UsersController.php';
+
 class ViewsController {
+
+    public function viewPoll($pollId){
+        //Verifica que seas dueño y luego
+        //Carga los datos de la encuesta y luego carga la pagina
+        // getPollById
+
+        //Cargo los datos de la encuesta por la id
+        $pollModel = new PollsModel();
+
+        $pollData = $pollModel->getPollById($pollId);        
+
+        $optionsData = $pollModel->getOptionsByPollId($pollId);
+
+        $candidatesData = $pollModel->getCandidatesByPollId($pollId);
+
+        $userController = new UsersController();
+
+        $creatorData = $userController->getUserInfoById($pollData['ID_USER']);
+
+        require_once './app/views/viewPoll.php';
+
+
+    }
 
     public function home() {
         // Cargar la vista de inicio

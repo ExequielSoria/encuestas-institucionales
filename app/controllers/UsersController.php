@@ -5,6 +5,12 @@ require_once __DIR__ . '/../models/UsersModel.php';
 //Clase encargada de gestionar las acciones sobre los usuarios
 class UsersController {
 
+    public function getUserInfoById($id) {
+        //Obtiene un usuario por su ID
+        $userModel = new UsersModel();
+        return $userModel->getUserInfoById($id);
+    }
+
     //Funcion encargada del login en general
     public function login() {
 
