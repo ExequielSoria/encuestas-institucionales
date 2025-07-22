@@ -15,4 +15,7 @@
 
 <p>Para añadir elecciones por id ?controller=polls&action=prepareElections&id=x</p>
 
+<p>Para ver las encuestas por id ?controller=views&action=viewPoll&id=x</p>
+
+
 <h2>Encuestas</h2>

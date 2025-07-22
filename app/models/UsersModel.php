@@ -5,6 +5,14 @@ require_once './db/internDB.php';
 //Clase encargada de gestionar las acciones sobre los usuarios en la base de datos
 class UsersModel {
 
+    public function getUserInfoById($id) {
+        global $pdo;
+        $sql = "SELECT USERNAME, ROLE, STATUS, ID_USER FROM USERS WHERE ID_USER = ?";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([$id]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
     public static function searchForUsername($username) {
         global $pdo;
         $sql = "SELECT * FROM USERS WHERE username = ?";
