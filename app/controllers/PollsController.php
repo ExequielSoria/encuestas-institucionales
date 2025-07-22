@@ -227,8 +227,31 @@ class PollsController {
 
     }
 
+
+    public function allowViewPoll($pollId, $userId){
+        $pollModel = new PollsModel();
+
+        //Verificar que se cumpla alguna de las condiciones: Ser admin, el creador, haber votado, resultados PUBLICOS 
+        //Traigo todos los datos de la encuesta
+        $pollData = $pollModel->getPollById($pollId);
+
+        //Comparo
+        if( $_SESSION['role'] == "ADMIN" || $pollData['ID_USER'] == $userId ) {
+            return true;
+        }
+
+        //Si es publica, la muestro, sino ni con el voto la podes ver   
+        if ( $pollData['VISIBILITY'] == "PRIVATE" ) {
+            return false;
+        }
+        //VERIFICAR SI VOTO (PROXIMAMENTE)
+
+        return false;
+    }
+
     //Funcion encargada de verificar si el usuario es el dueño de la encuesta
     public function verifyOwner(){
+
         if ( isset($_GET['id']) && is_numeric($_GET['id']) ) {
 
             //Extraigo el id que viene por GET
