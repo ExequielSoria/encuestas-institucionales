@@ -9,6 +9,35 @@ require_once './app/controllers/PollsController.php';
 
 class ViewsController {
 
+    public function viewUser($idToSearch){
+        //Validar admin***
+
+        //Busco al usuario, traigo los datos y luego cargo la vista
+        $usersController = new UsersController();
+
+        $userData = $usersController->getUserInfoById($idToSearch);
+
+        //var_dump($userData);
+
+        // Cargo la vista de ver usuario
+        if (isset($_SESSION['role']) && $_SESSION['role'] == "ADMIN") {
+            include_once './app/views/viewUser.php';
+        } else {
+            echo "<script> alert('Necesitas ser administrador para ver un usuario')</script>";
+            include_once './app/views/login.php';
+        }
+    }
+
+    public function createUser(){
+        // Cargo la vista de crear usuario
+        if (isset($_SESSION['role']) && $_SESSION['role'] == "ADMIN") {
+            include_once './app/views/createUser.php';
+        } else {
+            echo "<script> alert('Necesitas ser administrador para crear un usuario')</script>";
+            include_once './app/views/login.php';
+        }
+    }
+
     public function viewPoll($pollId){
         //Carga los datos de la encuesta, verifico y luego carga la pagina
         
@@ -32,7 +61,7 @@ class ViewsController {
         if ( $isAllowed == false ){
             echo " <script>alert('No puedes ver esta encuesta');</script> ";
             include_once './app/views/home.php';
-        } else {
+        } else {            
             require_once './app/views/viewPoll.php';
 
         }

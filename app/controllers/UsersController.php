@@ -87,8 +87,11 @@ class UsersController {
             $newPass = $_POST['newPassword'] ?? '';
 
             //Creo el usuario
-            echo $newUser = UsersModel::createUser($newUsername, $newPass, $role);
+            $newUser = UsersModel::createUser($newUsername, $newPass, $role);
             
+            echo "<script>alert('Usuario creado correctamente');</script>";
+            echo "<script>window.location.href='?controller=views&action=home';</script>";
+
             //var_dump($newUser);
 
         }
