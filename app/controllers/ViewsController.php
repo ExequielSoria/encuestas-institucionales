@@ -40,43 +40,42 @@ class ViewsController {
 
     public function viewPoll($pollId){
 
-        //Carga los datos de la encuesta, verifico y luego carga la pagina
-        
-        //Instancio los Controladores y Modelos que necesito
-        $pollModel = new PollsModel();
-
-        $pollData = $pollModel->getPollById($pollId);
-        $optionsData = $pollModel->getOptionsByPollId($pollId);
-        $candidatesData = $pollModel->getCandidatesByPollId($pollId);
-
-        $usersController = new UsersController();
-
-        $creatorData = $usersController->getUserInfoById($pollData['ID_USER']);
-        
-        
-        //Verificar que se cumpla alguna de las condiciones: Ser admin, el creador, haber votado, resultados PUBLICOS 
+        //Primero uso el PollsController para ver el total de encuestas creadas
         $pollsController = new PollsController();
-        $isAllowed = $pollsController->allowViewPoll($pollId, $_SESSION['id']);
-
+        
         //Cargo la cantidad total de encuestas
         $totalPolls = $pollsController->howManyPolls();
-
         $totalPolls = (int)$totalPolls;
+
+        //Verifico que sea Admin, el creador, haber votado, resultados PUBLICOS
+        $isAllowed = $pollsController->allowViewPoll($pollId, $_SESSION['id']);
         
-        if( $pollId > $totalPolls && $pollId < 0  ){
-            echo " <script>alert('ID de encuesta no valido');</script>";
-        }
+        //Primero verifico el id, para no buscar datos al pepe
+        if( $pollId <= $totalPolls && $pollId > 0 ){
 
-        //Cargo los datos de la encuesta por la id
-        if ( $isAllowed == false ){
-            echo " <script>alert('No puedes ver esta encuesta');</script> ";
+            if($isAllowed == true){
+                //Instancio los modelos y traigo datos, colta
+                $pollModel = new PollsModel();
+    
+                $pollData = $pollModel->getPollById($pollId);
+                $optionsData = $pollModel->getOptionsByPollId($pollId);
+                $candidatesData = $pollModel->getCandidatesByPollId($pollId);
+    
+                $usersController = new UsersController();
+                $creatorData = $usersController->getUserInfoById($pollData['ID_USER']);
+    
+                require_once './app/views/viewPoll.php';
+            } else {            
+            echo " <script>alert('No podes ver esta encuesta');</script> ";
             include_once './app/views/home.php';
-        } else {            
-            require_once './app/views/viewPoll.php';
-
         }
 
 
+
+        } else {            
+            echo " <script>alert('Esa encuesta no existe');</script> ";
+            include_once './app/views/home.php';
+        }
 
     }
 
