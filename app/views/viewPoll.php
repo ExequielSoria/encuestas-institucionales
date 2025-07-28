@@ -1,4 +1,23 @@
 <?php
+
+//Verifico el total de las encuestas
+var_dump ($totalPolls);
+
+$totalPolls = (int)$totalPolls;
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send'])) {
+    $id = $_POST['idPoll'];
+    
+    if( $id <= $totalPolls && $id > 0 ){
+    echo "<script>window.location.href='?controller=views&action=viewPoll&id=$id';</script>";
+    } else {
+        echo "<script>alert('ID de encuesta no valido');</script> ";
+        echo "<script>window.location.href='?controller=views&action=viewPoll&id=1';</script>";
+
+    }
+}
+
+
 //Validaciones de seguridad
 
 
@@ -41,7 +60,12 @@ if ( in_array('ALL', $pollData['CAREERS']) ){
 
 <a href="?controller=views&action=home">Volver a inicio</a>
 
-<h1> Encuesta</h1>
+<h1> Encuesta numero <? echo $pollData['ID_POLL'];?> </h1>
+
+<form action="?controller=views&action=viewPoll&id=" method="POST">
+    <input type="number" name="idPoll" placeholder="ID de la encuesta" value="<?php echo $pollData['ID_POLL']; ?>" required>
+    <input type="submit" name="send"value="Buscar encuesta">
+</form>
 
 <div class="marco">
 

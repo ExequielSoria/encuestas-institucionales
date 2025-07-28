@@ -1,3 +1,8 @@
+<?php
+session_start();    
+
+?>
+
 <h1>Este es el home</h1>
 
 <h3>Bienvenido <?php echo $_SESSION['username']; ?> </h3>
@@ -15,39 +20,54 @@
     }
 </style>
 
-<div class="marco">
-    
-    <h3>Panel de Admin</h3>
+<?php if (isset($_SESSION['role']) && $_SESSION['role'] == "ADMIN"): ?>
 
-    <a href="?controller=views&action=createUser">Crear usuario</a>
+    <div class="marco">
+        
+        <h3>Panel de Admin</h3>
 
-    <br>
+        <a href="?controller=views&action=createUser">Crear usuario</a>
 
-    <a href="?controller=views&action=viewUser&id=1">Ver usuario</a>
+        <br>
 
-    <br>
-    <br>
+        <a href="?controller=views&action=viewUser&id=1">Ver usuario</a>
 
-    <a href="?controller=views&action=createPoll">Crear encuesta</a>
+        <br>
+        <br>
 
-    <br>
+        <a href="?controller=views&action=createPoll">Crear encuesta</a>
 
-    <a href="?controller=views&action=createPoll">Ver encuesta</a>
+        <br>
 
-</div>
+        <a href="?controller=views&action=viewPoll&id=1">Ver encuesta</a>
 
-<div class="marco">
-    
-    <h3>Panel de Creador</h3>
+        <br>
 
-    <a href="?controller=views&action=createPoll">Crear encuesta</a>
+        <a href="?controller=views&action=createPoll">Mis encuestas</a>
 
-    <br>
 
-    <a href="?controller=views&action=createPoll">Ver encuesta</a>
+    </div>
+<?php endif; ?>
 
-</div>
 
+
+<?php if (isset($_SESSION['role']) && $_SESSION['role'] == "CREATOR"): ?>
+    <div class="marco">
+        
+        <h3>Panel de Creador</h3>
+
+        <a href="?controller=views&action=createPoll">Crear encuesta</a>
+
+        <br>
+
+        <a href="?controller=views&action=createPoll">Ver encuesta</a>
+
+        <br>
+
+        <a href="?controller=views&action=createPoll">Mis encuestas</a>
+
+    </div>
+<?php endif; ?>
 
 <br>
 <br>

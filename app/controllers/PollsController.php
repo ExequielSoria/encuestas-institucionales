@@ -6,7 +6,10 @@ require_once __DIR__ . '/../controllers/UsersController.php';
 
 class PollsController {
 
-
+    public function howManyPolls(){
+        $pollModel = new PollsModel();
+        return $pollModel->howManyPolls();
+    }
 
     //Funcion que trae todas las encuestas disponibles 
     public function loadRecentPolls(){

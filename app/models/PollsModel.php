@@ -5,6 +5,14 @@ require_once './db/internDB.php';
 //Clase encargada de la gestion de las encuestas en la base de datos
 class PollsModel {
 
+    public function howManyPolls(){
+        global $pdo;
+        $sql = "SELECT COUNT(*) FROM POLLS";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchColumn();
+    }
+
     public function getPollById($id){
         global $pdo;
         $sql = "SELECT * FROM POLLS WHERE ID_POLL = ?";

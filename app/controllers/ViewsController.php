@@ -24,7 +24,7 @@ class ViewsController {
             include_once './app/views/viewUser.php';
         } else {
             echo "<script> alert('Necesitas ser administrador para ver un usuario')</script>";
-            include_once './app/views/login.php';
+            include_once './app/views/home.php';
         }
     }
 
@@ -34,11 +34,12 @@ class ViewsController {
             include_once './app/views/createUser.php';
         } else {
             echo "<script> alert('Necesitas ser administrador para crear un usuario')</script>";
-            include_once './app/views/login.php';
+            include_once './app/views/home.php';
         }
     }
 
     public function viewPoll($pollId){
+
         //Carga los datos de la encuesta, verifico y luego carga la pagina
         
         //Instancio los Controladores y Modelos que necesito
@@ -56,7 +57,16 @@ class ViewsController {
         //Verificar que se cumpla alguna de las condiciones: Ser admin, el creador, haber votado, resultados PUBLICOS 
         $pollsController = new PollsController();
         $isAllowed = $pollsController->allowViewPoll($pollId, $_SESSION['id']);
+
+        //Cargo la cantidad total de encuestas
+        $totalPolls = $pollsController->howManyPolls();
+
+        $totalPolls = (int)$totalPolls;
         
+        if( $pollId > $totalPolls && $pollId < 0  ){
+            echo " <script>alert('ID de encuesta no valido');</script>";
+        }
+
         //Cargo los datos de la encuesta por la id
         if ( $isAllowed == false ){
             echo " <script>alert('No puedes ver esta encuesta');</script> ";
@@ -65,6 +75,8 @@ class ViewsController {
             require_once './app/views/viewPoll.php';
 
         }
+
+
 
     }
 
