@@ -12,10 +12,8 @@ class PollsController {
     }
 
     //Funcion que trae todas las encuestas disponibles 
-    public function loadRecentPolls(){
-
-
-
+    public function getLastestPollsAdmin($pollsCount){
+        return PollsModel::getLastestPollsAdmin($pollsCount);
     }
 
 

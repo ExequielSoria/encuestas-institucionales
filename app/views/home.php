@@ -9,6 +9,9 @@ session_start();
 <p>Usuario N° <?php echo $_SESSION['id']; ?> </p>
 <p>Identificado como <?php echo $_SESSION['role']; ?> </p>
 
+<a href="?controller=users&action=endSession">Cerrar sesión</a>
+
+
 <style> .marco {
     text-align:center;
     border: 2px solid black;
@@ -72,11 +75,20 @@ session_start();
 <br>
 <br>
 
-<a href="?controller=users&action=endSession">Cerrar sesión</a>
-
 <p>Para añadir elecciones por id ?controller=polls&action=prepareElections&id=x</p>
 
 <p>Para ver las encuestas por id ?controller=views&action=viewPoll&id=x</p>
 
 
 <h2>Encuestas</h2>
+
+<div class="marco">
+
+    <h3>Boca el mas grande</h3>
+    <p>Creada por Exequiel Soria</p>
+    <p>¿Boca sera el equipo mas grande del mundo? jaja</p>
+    <p> Cierra el 28/09/25 </p>
+
+    <a href="?controller=views&action=viewPoll&id=1">Ver encuesta</a>
+
+</div>

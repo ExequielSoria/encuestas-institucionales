@@ -7,6 +7,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send'])) {
 }
 
 ?>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ver usuario</title>
+
 <a href="?controller=views&action=home">Volver a inicio</a>
 
 <h1>Mostrando usuario con el ID <?php echo $idToSearch; ?></h1>

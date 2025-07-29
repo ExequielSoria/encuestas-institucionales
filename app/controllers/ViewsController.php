@@ -40,6 +40,13 @@ class ViewsController {
 
     public function viewPoll($pollId){
 
+        //Aca recibo el id desde el formulario de viewPoll
+        if( $_POST['send'] && isset($_POST['idPoll']) ){
+            $pollId = (int)$_POST['idPoll'];
+        }
+
+        $pollId = (int)$pollId;
+
         //Primero uso el PollsController para ver el total de encuestas creadas
         $pollsController = new PollsController();
         
@@ -81,6 +88,11 @@ class ViewsController {
 
     public function home() {
         // Cargar la vista de inicio
+        $pollsController = new PollsController();
+
+        $homePolls = $pollsController->getLastestPollsAdmin(10);
+
+        var_dump($homePolls);
 
         if (isset($_SESSION['username']) && $_SESSION['username'] != null) {
             //Si el usuario esta logueado, lo redirijo al Home
