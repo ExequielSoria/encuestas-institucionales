@@ -10,22 +10,47 @@ require_once './app/controllers/PollsController.php';
 class ViewsController {
 
     public function viewUser($idToSearch){
-        //Validar admin***
+
+        //Aca recibo el id desde el formulario de viewUser
+        if( $_POST['send'] && isset($_POST['idUser']) ){
+            $idToSearch = (int)$_POST['idUser'];
+        }
+
+        $idToSearch = (int)$idToSearch;
+
 
         //Busco al usuario, traigo los datos y luego cargo la vista
+
+
+        //Instancio el controlador de usuarios para traer el nombre y la cantidad de usuarios creados
         $usersController = new UsersController();
 
-        $userData = $usersController->getUserInfoById($idToSearch);
+        $usersCount = $usersController->howManyUsers();
+        //echo $usersCount;
 
-        //var_dump($userData);
+        $usersCount = (int)$usersCount;
 
-        // Cargo la vista de ver usuario
-        if (isset($_SESSION['role']) && $_SESSION['role'] == "ADMIN") {
-            include_once './app/views/viewUser.php';
+        if( $idToSearch <= $usersCount &&  $idToSearch > 0){
+
+            // Cargo la vista de ver usuario
+            if (isset($_SESSION['role']) && $_SESSION['role'] == "ADMIN") {
+                //Traigo los datos del usuario
+                $userData = $usersController->getUserInfoById($idToSearch);
+
+                include_once './app/views/viewUser.php';
+            } else {
+                echo "<script> alert('Necesitas ser administrador para ver un usuario')</script>";
+                include_once './app/views/home.php';
+            }
+
+
+
         } else {
-            echo "<script> alert('Necesitas ser administrador para ver un usuario')</script>";
+            echo " <script>alert('Ese usuario no existe');</script> ";
             include_once './app/views/home.php';
         }
+
+
     }
 
     public function createUser(){
@@ -87,14 +112,22 @@ class ViewsController {
     }
 
     public function home() {
+
+        $usersController = new UsersController();
+
+
         // Cargar la vista de inicio
         $pollsController = new PollsController();
 
-        $homePolls = $pollsController->getLastestPollsAdmin(10);
 
-        var_dump($homePolls);
 
         if (isset($_SESSION['username']) && $_SESSION['username'] != null) {
+
+            $homePolls = $pollsController->getLastestPollsAdmin(10);
+
+            var_dump($homePolls);
+
+            
             //Si el usuario esta logueado, lo redirijo al Home
             include_once './app/views/home.php';
         } else {

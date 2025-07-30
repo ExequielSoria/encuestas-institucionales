@@ -7,7 +7,7 @@ class PollsModel {
 
     public function getLastestPollsAdmin($pollsCount){
             global $pdo;
-        $sql = "SELECT * FROM POLLS ORDER BY END_DATE DESC limit 5;";
+        $sql = "SELECT * FROM POLLS ORDER BY ID_POLL DESC limit 6;";
         $stmt = $pdo->prepare($sql);
         $stmt->execute([$pollsCount]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);

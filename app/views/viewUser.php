@@ -1,11 +1,4 @@
 <?php
-//var_dump($userData);
-//Para recargar con otro id
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send'])) {
-    $id = $_POST['idUser'];
-    echo " <script>window.location.href='?controller=views&action=viewUser&id=$id';</script>";
-}
-
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -16,7 +9,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send'])) {
 
 <a href="?controller=views&action=home">Volver a inicio</a>
 
-<h1>Mostrando usuario con el ID <?php echo $idToSearch; ?></h1>
+<h1>Mostrando usuario <?php echo $idToSearch; ?> de <?php echo $usersCount; ?></h1>
+
+<form action="?controller=views&action=viewUser&id=" method="POST">
+    <input type="number" name="idUser" placeholder="ID del usuario" value="<?php echo $idToSearch; ?>" required>
+    <input type="submit" name="send"value="Buscar usuario">
+</form>
+
 
 <div class="marco">
 
@@ -45,8 +44,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send'])) {
 <a href="?controller=views&action=editUser&id=<?php echo $idToSearch; ?>">Editar usuario</a>
 
 </div>
-
-<form action="?controller=views&action=viewUser&id=" method="POST">
-    <input type="number" name="idUser" placeholder="ID del usuario" value="<?php echo $idToSearch; ?>" required>
-    <input type="submit" name="send"value="Buscar usuario">
-</form>
