@@ -9,6 +9,33 @@ require_once './app/controllers/PollsController.php';
 
 class ViewsController {
 
+    public function editUser($id){
+
+        $usersController = new UsersController();
+
+        //Verificar que sea admin
+        if (isset($_SESSION['role']) && $_SESSION['role'] == "ADMIN") {
+
+            
+            //Traigo los datos del usuario
+            $userData = $usersController->getUserInfoById($id);
+
+            //var_dump($userData);
+
+            include_once './app/views/editUser.php';
+        } else {
+            echo "<script> alert('Necesitas ser administrador para editar un usuario')</script>";
+            include_once './app/views/home.php';
+        }
+        
+
+        //Traer los datos del usuario
+        //Volcarlos en el formulario
+
+        //formulario enviable a editar
+
+    }
+
     public function viewUser($idToSearch){
 
         //Aca recibo el id desde el formulario de viewUser
@@ -44,6 +71,7 @@ class ViewsController {
             }
 
 
+            //No me gusta que primero se haga la verificacion de usuario y luego la consulta de rol, pero 
 
         } else {
             echo " <script>alert('Ese usuario no existe');</script> ";

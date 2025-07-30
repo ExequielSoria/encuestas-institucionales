@@ -5,6 +5,87 @@ require_once __DIR__ . '/../models/UsersModel.php';
 //Clase encargada de gestionar las acciones sobre los usuarios
 class UsersController {
 
+    public function validatePasswordUpdate() {
+
+        //Validar que la contraseña sea correcta
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $id = $_POST['id'];
+            $newPassword = $_POST['newPassword'];
+            $confirmPassword = $_POST['confirmPassword'];
+
+            if ($newPassword === $confirmPassword) {
+                // Actualizar contraseña
+                $usersModel = new UsersModel();
+                $usersModel->updatePassword($id, $newPassword);
+                echo "<script>alert('Contraseña actualizada correctamente');</script>";
+                echo "<script> window.location.href='?controller=views&action=editUser&id=$id';</script>";
+            } else {
+                echo "<script>alert('Las contraseñas no coinciden');</script>";
+            }
+        }
+    }
+
+    public function validateUserEdit(){
+
+        $id = $_POST['idToEdit'];
+        $newUsername = $_POST['editedUsername'];
+        $newState = $_POST['editedState'];
+        $newRole = $_POST['editedRole'];
+
+        //Valido el estado y rol
+        if (  $newState != '1' ){
+            $newState = '0';
+        } else {
+            $newState = '1';
+        }
+
+        if (  $newRole != 'ADMIN' ){
+            $newRole = 'CREATOR';
+        } else {
+            $newRole = 'ADMIN';
+        }
+
+        //Se recibe y procesan los datos del usuario a editar
+
+        $usersModel = new UsersModel();
+
+        //Verificar que sea admin
+        if (isset($_SESSION['role']) && $_SESSION['role'] == "ADMIN") {
+
+            if( $newUsername != "" &&  strlen($newUsername) < 100){
+
+                if($usersModel->userExists($newUsername, $id)){
+                    echo "<script>alert('El nombre de usuario ya existe');</script>";
+                } else {
+                    // Actualizar usuario
+                    $usersModel->updateUser($id, $newUsername, $newState, $newRole);
+                    echo "<script>alert('Usuario actualizado correctamente');</script>";
+                    echo "<script>window.location.href='?controller=views&action=editUser&id=$id';</script>";
+                }
+
+            } else {
+                echo "<script>alert('El nombre de usuario no es valido');</script>";
+                echo "<script>window.location.href='?controller=views&action=editUser&id=$id';</script>";
+                return;
+            }
+
+        echo $_POST['idToEdit'];
+        echo $_POST['editedUsername'];
+        echo $_POST['editedState'];
+
+
+
+        } 
+
+        //Traer los datos del usuario
+        //Volcarlos en el formulario
+
+        //formulario enviable a editar
+
+    }
+
+
+
     public function howManyUsers() {
         //Para ver cuantos usuarios hay creados
         $userModel = new UsersModel();

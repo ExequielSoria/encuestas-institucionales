@@ -82,9 +82,6 @@ session_start();
     </div>
 <?php endif; ?>
 
-<br>
-<br>
-
 <h2>Ultimas encuestas</h2>
 
 
