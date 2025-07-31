@@ -6,6 +6,13 @@ require_once __DIR__ . '/../controllers/UsersController.php';
 
 class PollsController {
 
+    public function getUserPolls($userId) {
+        //Verifico que el usuario sea admin o dueño de 
+
+        $pollModel = new PollsModel();
+        return $pollModel->getUserPolls($userId);
+    }
+
     public function howManyPolls(){
         $pollModel = new PollsModel();
         return $pollModel->howManyPolls();

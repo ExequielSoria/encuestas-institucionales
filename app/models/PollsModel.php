@@ -13,6 +13,14 @@ class PollsModel {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function getUserPolls($userId) {
+        global $pdo;
+        $sql = "SELECT * FROM POLLS WHERE ID_USER = ? ORDER BY ID_POLL DESC";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([$userId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function howManyPolls(){
         global $pdo;
         $sql = "SELECT COUNT(*) FROM POLLS";

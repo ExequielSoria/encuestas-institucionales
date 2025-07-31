@@ -9,6 +9,25 @@ require_once './app/controllers/PollsController.php';
 
 class ViewsController {
 
+    public function userPolls($id) {
+        // Cargar la vista de mis encuestas
+        if (isset($_SESSION['role']) && $_SESSION['role'] != null && ( $_SESSION['role'] == "ADMIN" || $_SESSION['role'] == "CREATOR" )) {
+
+            $usersController = new UsersController();
+            $pollsController = new PollsController();
+
+            $userInfo = $usersController->getUserInfoById($id);
+            $userPolls = $pollsController->getUserPolls($id);
+
+            //var_dump($userPolls);
+
+            include_once './app/views/userPolls.php';
+        } else {
+            echo "<script> alert('Necesitas ser administrador o creador para ver tus encuestas')</script>";
+            include_once './app/views/home.php';
+        }
+    }
+
     public function editUser($id){
 
         $usersController = new UsersController();
@@ -153,7 +172,7 @@ class ViewsController {
 
             $homePolls = $pollsController->getLastestPollsAdmin(10);
 
-            var_dump($homePolls);
+            //var_dump($homePolls);
 
             
             //Si el usuario esta logueado, lo redirijo al Home

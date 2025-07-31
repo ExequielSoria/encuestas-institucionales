@@ -11,11 +11,18 @@ session_start();
 
 <a href="?controller=users&action=endSession">Cerrar sesión</a>
 
-<p>Para añadir elecciones por id ?controller=polls&action=prepareElections&id=x</p>
+
+<!--<p>Para añadir elecciones por id ?controller=polls&action=prepareElections&id=x</p>
 
 <p>Para ver las encuestas por id ?controller=views&action=viewPoll&id=x</p>
 
+-->
 <style> 
+h2{
+    text-align: center;
+    margin-top: 20px;
+}
+
 .pollsSection {
     display: flex;
     flex-wrap: wrap;
@@ -31,9 +38,19 @@ session_start();
     background-color: #f9f9f9;
     border-radius: 10px;
     }
+
+.panelContainer {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    }
 </style>
 
 <?php if (isset($_SESSION['role']) && $_SESSION['role'] == "ADMIN"): ?>
+
+    <h2>Panel de Admin</h2>
+
+    <div class="panelContainer">
 
     <div class="marco">
         
@@ -56,10 +73,13 @@ session_start();
 
         <br>
 
-        <a href="?controller=views&action=createPoll">Mis encuestas</a>
+        <a href="?controller=views&action=userPolls&id=<?php echo $_SESSION['id']; ?>">Mis encuestas</a>
 
 
     </div>
+
+    </div>
+
 <?php endif; ?>
 
 
@@ -77,20 +97,20 @@ session_start();
 
         <br>
 
-        <a href="?controller=views&action=createPoll">Mis encuestas</a>
+        <a href="?controller=views&action=userPolls">Mis encuestas</a>
 
     </div>
 <?php endif; ?>
 
 <h2>Ultimas encuestas</h2>
 
-
-
 <section class="pollsSection">
     <?php foreach ($homePolls as $homePoll): ?>
         <div class="marco">
             <h3><?= htmlspecialchars($homePoll["TITLE"]) ?></h3>
-            <p>Creada por <?= $usersController->getUserInfoById($homePoll["ID_USER"])['USERNAME'] ?> </p>
+
+            <p>Creada por <a href="?controller=views&action=userPolls&id=<?= $usersController->getUserInfoById($homePoll["ID_USER"])['ID_USER'] ?>"><?= $usersController->getUserInfoById($homePoll["ID_USER"])['USERNAME'] ?> </a> </p>
+
             <?php if (!empty($homePoll["DESCRIPTION"])): ?>
                 <p><?= htmlspecialchars($homePoll["DESCRIPTION"]) ?></p>
             <?php endif; ?>
