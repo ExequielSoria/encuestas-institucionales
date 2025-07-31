@@ -9,6 +9,71 @@ require_once './app/controllers/PollsController.php';
 
 class ViewsController {
 
+    public function deletePoll($pollId) {
+
+        if( $pollId <= 0 || !is_numeric($pollId) ){
+            echo "<script>alert('El id de la encuesta no es valido');</script>";
+            echo "<script> window.location.href='?controller=views&action=home'</script>";
+            return;
+        }
+
+        $pollModel = new PollsModel();
+
+        $pollData = $pollModel->getPollById($pollId);
+
+        $usersController = new UsersController();
+        $creatorData = $usersController->getUserInfoById($pollData['ID_USER']);
+
+        $pollId = (int)$pollId;
+
+        //Verifico que sea Admin o el creador
+        if( $_SESSION['role'] == "ADMIN" || $creatorData['ID_USER'] == $_SESSION['id'] ){
+
+            //Cargo la vista de editar encuesta
+            include_once './app/views/deletePoll.php';
+
+        } else {            
+            echo " <script>alert('No tenes permiso para borrar esta encuesta');</script> ";
+            echo "<script> window.location.href='?controller=views&action=home'</script>";
+            return;
+        }
+
+    }
+
+    public function editPoll($pollId) {
+
+        if( $pollId <= 0 || !is_numeric($pollId) ){
+            echo "<script>alert('El id de la encuesta no es valido');</script>";
+            echo "<script> window.location.href='?controller=views&action=home'</script>";
+            return;
+
+        }
+
+        $pollModel = new PollsModel();
+
+        $pollData = $pollModel->getPollById($pollId);
+        $optionsData = $pollModel->getOptionsByPollId($pollId);
+        $candidatesData = $pollModel->getCandidatesByPollId($pollId);
+
+        $usersController = new UsersController();
+        $creatorData = $usersController->getUserInfoById($pollData['ID_USER']);
+
+        $pollId = (int)$pollId;
+
+        //Verifico que sea Admin o el creador
+        if( $_SESSION['role'] == "ADMIN" || $creatorData['ID_USER'] == $_SESSION['id'] ){
+
+            //Cargo la vista de editar encuesta
+            include_once './app/views/editPoll.php';
+
+        } else {            
+            echo " <script>alert('No podes editar esta encuesta');</script> ";
+            echo "<script> window.location.href='?controller=views&action=home'</script>";
+            
+        }
+}
+
+
     public function userPolls($id) {
         // Cargar la vista de mis encuestas
         if (isset($_SESSION['role']) && $_SESSION['role'] != null && ( $_SESSION['role'] == "ADMIN" || $_SESSION['role'] == "CREATOR" )) {

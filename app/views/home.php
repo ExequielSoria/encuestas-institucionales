@@ -85,19 +85,25 @@ h2{
 
 
 <?php if (isset($_SESSION['role']) && $_SESSION['role'] == "CREATOR"): ?>
+
+    <h2>Panel de Creador</h2>
+
+    <div class="panelContainer">
+
     <div class="marco">
         
-        <h3>Panel de Creador</h3>
+        <h2>Panel de Creador</h2>
 
         <a href="?controller=views&action=createPoll">Crear encuesta</a>
 
         <br>
 
-        <a href="?controller=views&action=createPoll">Ver encuesta</a>
+        <a href="?controller=views&action=viewPoll&id=1">Ver encuesta</a>
 
-        <br>
+        <a href="?controller=views&action=userPolls&id=<?php echo $_SESSION['id']; ?>">Mis encuestas</a>
 
-        <a href="?controller=views&action=userPolls">Mis encuestas</a>
+
+    </div>
 
     </div>
 <?php endif; ?>

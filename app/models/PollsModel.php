@@ -5,6 +5,17 @@ require_once './db/internDB.php';
 //Clase encargada de la gestion de las encuestas en la base de datos
 class PollsModel {
 
+    public function deletePoll($pollId) {
+        global $pdo;
+
+        //Actualizo el STATE de 1 a 0
+        $sql = "UPDATE POLLS SET STATUS = 0 WHERE ID_POLL = ?";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([$pollId]);
+        return $stmt->rowCount() > 0; // Retorna true si se actualizó al menos una fila
+
+    }
+
     public function getLastestPollsAdmin($pollsCount){
             global $pdo;
         $sql = "SELECT * FROM POLLS ORDER BY ID_POLL DESC limit 6;";
@@ -36,6 +47,33 @@ class PollsModel {
         $stmt->execute([$id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+
+public function editPoll($data){
+
+        var_dump($data);
+        global $pdo;
+        // Preparo la sentencia sql
+        $sql = "UPDATE POLLS SET TITLE = ?, DESCRIPTION = ?, START_DATE = ?, END_DATE = ?, VISIBILITY = ?, COLOUR = ?, MULTIPLE_CHOICE = ?, CAREERS = ?, YEARS = ? WHERE ID_POLL = ?";
+        $stmt = $pdo->prepare($sql);
+        // Ejecuto con la data proporcionada
+        $stmt->execute([
+            $data['title'],
+            $data['description'],
+            $data['startDate'],
+            $data['endDate'],
+            $data['visibility'],
+            $data['colour'],
+            $data['multipleChoice'],
+            $data['careers'],
+            $data['years'],
+            $data['idPoll']
+        ]);
+        //Retorno el id de la encuesta editada
+        return $data['idPoll'];
+
+    }
+
+
 
     public static function createPoll($data) {
         //echo "Creando encuesta...";
