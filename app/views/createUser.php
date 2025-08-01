@@ -6,7 +6,9 @@
     <title>Crear un usuario</title>
 </head>
 <body>
-    
+
+<a href="?controller=views&action=home">Volver al inicio</a>
+
 <h2>Crea un usuario</h2>
 <form method="POST" action="index.php?controller=users&action=create">
 

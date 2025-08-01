@@ -11,7 +11,7 @@
 <form method="POST" action="?controller=users&action=login">
     <input type="text" name="username" placeholder="Usuario o Legajo"><br>
     <input type="password" name="password" placeholder="Contraseña"><br>
-    Creador<input type="checkbox" name="isCreator"><br>
+    Creador/Administrador<input type="checkbox" name="isCreator"><br>
     <button type="submit">Ingresar</button>
 </form>
 
