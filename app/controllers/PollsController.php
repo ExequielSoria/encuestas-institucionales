@@ -6,17 +6,95 @@ require_once __DIR__ . '/../controllers/UsersController.php';
 
 class PollsController {
 
+    public function deletePoll(){
 
+        if (isset($_POST['idPoll'])) {
+
+            $pollId = (int)$_POST['idPoll'];
+
+            $pollModel = new PollsModel();
+
+            $pollData = $pollModel->getPollById($pollId);
+
+                //Verifico que el usuario sea admin o dueño de la encuesta
+            if( $_SESSION['role'] == "ADMIN" || $pollData['ID_USER'] == $_SESSION['id'] ){
+
+                $result = $pollModel->deletePoll($pollId);
+
+                if ($result) {
+                    echo "<script>alert('Encuesta eliminada con éxito');</script>";
+                    echo "<script>window.location.href='?controller=views&action=home';</script>";
+                } else {
+                    echo "<script>alert('Error al eliminar la encuesta');</script>";
+                    echo "<script>window.location.href='?controller=views&action=home';</script>";
+                    //var_dump($result);
+                }
+
+            } else {
+                echo "<script>alert('No tienes permiso para eliminar esta encuesta');</script>";
+                echo '<script>window.location.href="?controller=views&action=home";</script>';
+            }
+
+        }
+    }
+
+    public function getUserPolls($userId) {
+        //Verifico que el usuario sea admin o dueño de 
+
+        $pollModel = new PollsModel();
+        return $pollModel->getUserPolls($userId);
+    }
+
+    public function getUserPollsAdmin($userId) {
+        //Verifico que el usuario sea admin o dueño de 
+
+        $pollModel = new PollsModel();
+        return $pollModel->getUserPollsAdmin($userId);
+    }
+
+    public function howManyPolls(){
+        $pollModel = new PollsModel();
+        return $pollModel->howManyPolls();
+    }
 
     //Funcion que trae todas las encuestas disponibles 
-    public function loadRecentPolls(){
+    public function getLastestPollsAdmin($pollsCount){
+        return PollsModel::getLastestPollsAdmin($pollsCount);
+    }
 
-
-
+        //Funcion que trae todas las encuestas disponibles 
+    public function getLastestPolls($pollsCount){
+        return PollsModel::getLastestPolls($pollsCount);
     }
 
 
+    //El formulario de crear encuesta apunta a esta funcion
+    public function editPoll(){
 
+        //Valido la encuesta y la guardo
+        $currentPoll = $this->validatePoll();
+
+        $currentPollId = $_POST['idPoll'];
+        //var_dump($currentPoll);
+
+
+
+        //Si la encuesta es valida, la guardo en la base de datos y redirijo con el id de la encuesta creada
+        if ($currentPoll != false){
+            $pollId = PollsModel::editPoll($currentPoll);
+
+            //var_dump($pollId);
+
+            echo "<script> alert('Encuesta editada con exito'); </script>";
+            echo '<script>window.location.href="?controller=Views&action=viewPoll&id=' . $pollId . '";</script>';
+
+        } else {
+
+            echo "<script> alert('No se editó la encuesta, revisa los datos'); </script>";
+            echo '<script>window.location.href="?controller=Views&action=editPoll&id=' . $currentPollId . '";</script>';
+        }
+
+    }
 
     //El formulario de crear encuesta apunta a esta funcion
     public function createPoll(){
@@ -227,16 +305,15 @@ class PollsController {
 
     }
 
-
     public function allowViewPoll($pollId, $userId){
         $pollModel = new PollsModel();
-
-        //Verificar que se cumpla alguna de las condiciones: Ser admin, el creador, haber votado, resultados PUBLICOS 
+        
         //Traigo todos los datos de la encuesta
         $pollData = $pollModel->getPollById($pollId);
-
+        
         //Comparo
-        if( $_SESSION['role'] == "ADMIN" || $pollData['ID_USER'] == $userId ) {
+        //Verificar que se cumpla alguna de las condiciones: Ser admin, el creador, haber votado, resultados PUBLICOS 
+        if( $_SESSION['role'] == "ADMIN" || $_SESSION['role'] == "CREATOR" || $pollData['ID_USER'] == $userId ) {
             return true;
         }
 
@@ -390,6 +467,13 @@ class PollsController {
             $_SESSION['counter']++;
 
         }
+
+        //OJITO, ESTA VALIDACION ESTA SOLO PARA CUANDO SE EDITA UNA ENCUESTA PORQUE NECESITO METER EL ID EN $data,
+        // por eso no suma al contador de validaciones
+        if ( isset($_POST['idPoll']) && is_numeric($_POST['idPoll']) && $_POST['idPoll'] > 0 ) {
+            //Paso el idPoll a numero            
+            $data['idPoll'] = (int)$_POST['idPoll'];
+        }
         
         //VALIDACION FINAL, SI TODO ESTA BIEN DEVUELVO DATA
         if ($_SESSION['counter'] == 8 && isset($_POST['sendForm']) && ($_SESSION['role'] == "ADMIN"  || $_SESSION['role'] == "CREATOR") ) {
@@ -405,5 +489,7 @@ class PollsController {
             return false;
         }
     }
+
+    
 }
 

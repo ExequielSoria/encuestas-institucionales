@@ -37,9 +37,10 @@ $years = $form_data['years'] ?? [];
     <br>
     
     <label for="description">Descripción de la encuesta</label>
-    <input type="text" id="description" name="description" value="<?= htmlspecialchars($form_data['description'] ?? '') ?>" >
     
     <br>
+
+    <textarea id="description" name="description" rows="4" cols="50"><?= htmlspecialchars($form_data['description'] ?? '') ?></textarea>
 
     <h3>Plazos *</h3>
 
