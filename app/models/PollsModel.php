@@ -16,17 +16,41 @@ class PollsModel {
 
     }
 
-    public function getLastestPollsAdmin($pollsCount){
-            global $pdo;
-        $sql = "SELECT * FROM POLLS ORDER BY ID_POLL DESC limit 6;";
+    public function getLastestPolls($pollsCount){
+        global $pdo;
+
+        //Me aseguro que sea int la cantidad de encuestas a traer
+        $pollsCount = (int)$pollsCount;
+
+        $sql = "SELECT * FROM POLLS WHERE STATUS != 0 ORDER BY ID_POLL DESC limit $pollsCount;";
         $stmt = $pdo->prepare($sql);
-        $stmt->execute([$pollsCount]);
+        $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function getUserPolls($userId) {
+    public function getLastestPollsAdmin($pollsCount){
+        global $pdo;
+
+        //Me aseguro que sea int
+        $pollsCount = (int)$pollsCount;
+
+        $sql = "SELECT * FROM POLLS ORDER BY ID_POLL DESC limit $pollsCount;";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getUserPollsAdmin($userId) {
         global $pdo;
         $sql = "SELECT * FROM POLLS WHERE ID_USER = ? ORDER BY ID_POLL DESC";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([$userId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }    
+
+    public function getUserPolls($userId) {
+        global $pdo;
+        $sql = "SELECT * FROM POLLS WHERE ID_USER = ? AND STATUS != 0 ORDER BY ID_POLL DESC";
         $stmt = $pdo->prepare($sql);
         $stmt->execute([$userId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);

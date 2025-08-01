@@ -76,7 +76,7 @@ class ViewsController {
 
     public function userPolls($id) {
         // Cargar la vista de mis encuestas
-        if (isset($_SESSION['role']) && $_SESSION['role'] != null && ( $_SESSION['role'] == "ADMIN" || $_SESSION['role'] == "CREATOR" )) {
+        if (isset($_SESSION['role']) && $_SESSION['role'] != null && $_SESSION['role'] == "CREATOR" ) {
 
             $usersController = new UsersController();
             $pollsController = new PollsController();
@@ -85,11 +85,25 @@ class ViewsController {
             $userPolls = $pollsController->getUserPolls($id);
 
             //var_dump($userPolls);
-
             include_once './app/views/userPolls.php';
+
         } else {
-            echo "<script> alert('Necesitas ser administrador o creador para ver tus encuestas')</script>";
-            include_once './app/views/home.php';
+
+            if( $_SESSION['role'] == "ADMIN" ){
+
+            $usersController = new UsersController();
+            $pollsController = new PollsController();
+
+            $userInfo = $usersController->getUserInfoById($id);
+            $userPolls = $pollsController->getUserPollsAdmin($id);
+            include_once './app/views/userPolls.php';
+
+
+            } else {
+        
+                echo "<script> alert('No se pudieron cargar las encuestas del usuario')</script>";
+                include_once './app/views/home.php';
+            }
         }
     }
 
@@ -177,6 +191,9 @@ class ViewsController {
 
     public function viewPoll($pollId){
 
+        //Pasare info del usuario actual para ser evaluado en caso de ser alumno
+
+
         //Aca recibo el id desde el formulario de viewPoll
         if( $_POST['send'] && isset($_POST['idPoll']) ){
             $pollId = (int)$_POST['idPoll'];
@@ -231,17 +248,18 @@ class ViewsController {
         // Cargar la vista de inicio
         $pollsController = new PollsController();
 
-
-
         if (isset($_SESSION['username']) && $_SESSION['username'] != null) {
 
-            $homePolls = $pollsController->getLastestPollsAdmin(10);
+            if($_SESSION['role'] == "ADMIN"){
+                $lastestPolls = $pollsController->getLastestPollsAdmin(6);
 
-            //var_dump($homePolls);
+                include_once './app/views/home.php';
+            } else {
+                $lastestPolls = $pollsController->getLastestPolls(3);
+                include_once './app/views/home.php';
 
-            
-            //Si el usuario esta logueado, lo redirijo al Home
-            include_once './app/views/home.php';
+            }
+
         } else {
             //Si el usuario NO esta logueado, lo redirijo al login
             echo "Necesitas estar logeado para entrar";

@@ -1,6 +1,8 @@
 <?php
 session_start();    
 
+//var_dump($lastestPolls);
+
 ?>
 
 <h1>Este es el home</h1>
@@ -111,19 +113,25 @@ h2{
 <h2>Ultimas encuestas</h2>
 
 <section class="pollsSection">
-    <?php foreach ($homePolls as $homePoll): ?>
+    <?php foreach ($lastestPolls as $lastestPoll): ?>
         <div class="marco">
-            <h3><?= htmlspecialchars($homePoll["TITLE"]) ?></h3>
+            <h3><?= htmlspecialchars($lastestPoll["TITLE"]) ?></h3>
 
-            <p>Creada por <a href="?controller=views&action=userPolls&id=<?= $usersController->getUserInfoById($homePoll["ID_USER"])['ID_USER'] ?>"><?= $usersController->getUserInfoById($homePoll["ID_USER"])['USERNAME'] ?> </a> </p>
+            <p>Creada por <a href="?controller=views&action=userPolls&id=<?= $usersController->getUserInfoById($lastestPoll["ID_USER"])['ID_USER'] ?>"><?= $usersController->getUserInfoById($lastestPoll["ID_USER"])['USERNAME'] ?> </a> </p>
 
-            <?php if (!empty($homePoll["DESCRIPTION"])): ?>
-                <p><?= htmlspecialchars($homePoll["DESCRIPTION"]) ?></p>
+            <?php if (!empty($lastestPoll["DESCRIPTION"])): ?>
+                <p><?= htmlspecialchars($lastestPoll["DESCRIPTION"]) ?></p>
             <?php endif; ?>
 
-            <p> Cierra el <?= date("d/m/y", strtotime($homePoll["END_DATE"])) ?> </p>
+            <p> Cierra el <?= date("d/m/y", strtotime($lastestPoll["END_DATE"])) ?> </p>
 
-            <a href="?controller=views&action=viewPoll&id=<?= $homePoll["ID_POLL"] ?>">Ver encuesta</a>
+                <?php if ( $_SESSION['role'] == "ADMIN" ) : ?>
+
+                    <p>estado: <?= $lastestPoll["STATUS"] == 1 ? "Activa" : "Inactiva" ?></p>
+
+                <?php endif; ?>
+
+            <a href="?controller=views&action=viewPoll&id=<?= $lastestPoll["ID_POLL"] ?>">Ver encuesta</a>
         </div>
         <?php endforeach; ?>
 </section>

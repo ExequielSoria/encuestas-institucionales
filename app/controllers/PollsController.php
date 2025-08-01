@@ -45,6 +45,13 @@ class PollsController {
         return $pollModel->getUserPolls($userId);
     }
 
+    public function getUserPollsAdmin($userId) {
+        //Verifico que el usuario sea admin o dueño de 
+
+        $pollModel = new PollsModel();
+        return $pollModel->getUserPollsAdmin($userId);
+    }
+
     public function howManyPolls(){
         $pollModel = new PollsModel();
         return $pollModel->howManyPolls();
@@ -53,6 +60,11 @@ class PollsController {
     //Funcion que trae todas las encuestas disponibles 
     public function getLastestPollsAdmin($pollsCount){
         return PollsModel::getLastestPollsAdmin($pollsCount);
+    }
+
+        //Funcion que trae todas las encuestas disponibles 
+    public function getLastestPolls($pollsCount){
+        return PollsModel::getLastestPolls($pollsCount);
     }
 
 
