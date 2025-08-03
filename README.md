@@ -180,3 +180,27 @@ STATUS TINYINT DEFAULT 1
 
 -Expectativa-
 Mi meta con este proyecto es que por lo menos sea de utilidad, que funcione para lo que fue pensado, de maneria simple y directa. Por ahora para el proyecto solo pretendo entregar la logica del mismo, sin ser una prioridad la estetica, sin embargo, una vez cerrado y calificado el proyecto mi idea es darle un buen front-end y una interfaz simple, limpia y sobria. La idea tambien es poder exponerlo dentro de mi curriculum como programador, creo que podria ser bastante llamativo si queda como lo tengo planeado. Tambien quiero dejar el codigo libre y las instrucciones basicas para que sea facilmente replicable por cualquiera. 
+
+# FUNCIONAMIENTO #
+
+La idea de este proyecto es que sea acoplable a entornos con bases de datos ya definidas, esto ya que el sistema no contiene los datos de los votantes, solo hace las gestiones de encuestas, usuarios especiales y permisos basado en roles.
+
+Para determinar y tambien validar los votos de los alumnos, se hace una consulta a la base de datos de la institucion preguntando por 2 datos**: 
+
+**DOCUMENTO** DNI/CUIT o cualquier tipo de Identificador que este registrado en la db del instituto.
+
+**IDENTIFICADOR INSTITUCIONAL** LEGAJO/ID o cualquier identificador del usuario dentro del mismo instituto.
+
+Con esto podremos dar con el usuario y traer temporalmente la info que necesitemos. Dentro del sistema se almacenaria solamente el identificador para poder registrar su voto y tambien se almacenaria su nombre y apellido para hacer publica su eleccion (si éste lo desea).
+
+
+
+
+Una vez
+
+Estos 2 datos la idea es que sea a eleccion a futuro
+Por eso es que hay planes a futuro de pulir mucho mas este apartado. El objetivo final del "sistema de acoplamiento" seria poder parametrizar desde el .env las tablas en donde se encuentra la informacion de los usuarios en las bases de datos ajenas.
+
+## Desarrollo ##
+
+## Despliegue ##

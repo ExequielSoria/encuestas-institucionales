@@ -60,12 +60,13 @@ class UsersModel {
         $stmt->execute([$username]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if ($user && password_verify($password, $user['PASSWORD_HASH'])) {
+        if ($user && password_verify($password, $user["PASSWORD_HASH"])) {
             echo "Usuario verificado";
             return $user;
         } else {
             return false;
         }
+            
     }
 
     public static function loginExternDB($username, $password) {
