@@ -121,7 +121,7 @@ class UsersController {
 
                 if ($login == false){
                     echo "<script>alert('Usuario o contraseña incorrecto');</script>";
-                    #echo "<script>window.location.href='?controller=views&action=login';</script>";
+                    echo "<script>window.location.href='?controller=views&action=login';</script>";
                     var_dump($login);
 
 
