@@ -16,7 +16,7 @@ $user = $_ENV['EXTERNAL_MYSQL_USER'];
 $pass = $_ENV['EXTERNAL_MYSQL_PASS'];
 
 try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $user, $pass);
+    $pdoExtern = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $user, $pass);
 } catch (PDOException $e) {
     die("Error de conexión: " . $e->getMessage());
 }

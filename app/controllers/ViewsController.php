@@ -76,7 +76,7 @@ class ViewsController {
 
     public function userPolls($id) {
         // Cargar la vista de mis encuestas
-        if (isset($_SESSION['role']) && $_SESSION['role'] != null && $_SESSION['role'] == "CREATOR" ) {
+        if (isset($_SESSION['role']) && $_SESSION['role'] != null && ($_SESSION['role'] == "CREATOR" || $_SESSION['role'] == "VOTER") ) {
 
             $usersController = new UsersController();
             $pollsController = new PollsController();
@@ -123,7 +123,8 @@ class ViewsController {
             include_once './app/views/editUser.php';
         } else {
             echo "<script> alert('Necesitas ser administrador para editar un usuario')</script>";
-            include_once './app/views/home.php';
+            echo "<script> window.location.href='?controller=views&action=home'</script>";
+            
         }
         
 
@@ -189,6 +190,58 @@ class ViewsController {
         }
     }
 
+    public function votePoll($pollId){
+        //Pasare info del usuario actual para ser evaluado en caso de ser alumno
+
+        $pollId = (int)$pollId;
+
+        //Primero uso el PollsController para ver el total de encuestas creadas
+        $pollsController = new PollsController();
+        
+        //Cargo la cantidad total de encuestas
+        $totalPolls = $pollsController->howManyPolls();
+        $totalPolls = (int)$totalPolls;
+
+        //Verifico que sea Admin, el creador, haber votado, resultados PUBLICOS
+        $canVote = $pollsController->canUserVote($pollId);
+        
+        //Primero verifico el id, para no buscar datos al pepe
+        if( $pollId <= $totalPolls && $pollId > 0 ){
+
+            if($canVote == true){
+                //Instancio los modelos y traigo datos, colta
+                $pollModel = new PollsModel();
+    
+                $pollData = $pollModel->getPollById($pollId);
+                $optionsData = $pollModel->getOptionsByPollId($pollId);
+                $candidatesData = $pollModel->getCandidatesByPollId($pollId);
+    
+                $usersController = new UsersController();
+                $creatorData = $usersController->getUserInfoById($pollData['ID_USER']);
+    
+                require_once './app/views/votePoll.php';
+            } else {            
+            echo " <script>alert('No podes participar de esta encuesta');</script> ";
+            echo "<script> window.location.href='?controller=views&action=home'</script>";
+
+            
+        }
+
+
+
+        } else {            
+            echo " <script>alert('Esa encuesta no existe');</script> ";
+            echo "<script> window.location.href='?controller=views&action=home'</script>";
+
+        }
+
+        //Verifico que puedas votar
+        
+
+        //Cargo el formulario de voto con los datos de la encuesta y los candidatos/opciones en forma de lista
+        
+    }
+
     public function viewPoll($pollId){
 
         //Pasare info del usuario actual para ser evaluado en caso de ser alumno
@@ -228,14 +281,17 @@ class ViewsController {
                 require_once './app/views/viewPoll.php';
             } else {            
             echo " <script>alert('No podes ver esta encuesta');</script> ";
-            include_once './app/views/home.php';
+            echo "<script> window.location.href='?controller=views&action=home'</script>";
+
+            
         }
 
 
 
         } else {            
             echo " <script>alert('Esa encuesta no existe');</script> ";
-            include_once './app/views/home.php';
+            echo "<script> window.location.href='?controller=views&action=home'</script>";
+
         }
 
     }
@@ -251,13 +307,19 @@ class ViewsController {
         if (isset($_SESSION['username']) && $_SESSION['username'] != null) {
 
             if($_SESSION['role'] == "ADMIN"){
-                $lastestPolls = $pollsController->getLastestPollsAdmin(6);
+                $lastestPolls = $pollsController->getLastestPollsAdmin(9);
 
                 include_once './app/views/home.php';
             } else {
-                $lastestPolls = $pollsController->getLastestPolls(3);
-                include_once './app/views/home.php';
 
+                if( $_SESSION['role'] == "CREATOR" ){
+                    $lastestPolls = $pollsController->getLastestPolls(9);
+                    include_once './app/views/home.php';
+                    
+                } else {
+                    $lastestPolls = $pollsController->getLastestPollsVoter(9);
+                    include_once './app/views/home.php';                    
+                }
             }
 
         } else {

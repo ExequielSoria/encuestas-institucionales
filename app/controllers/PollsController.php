@@ -6,6 +6,74 @@ require_once __DIR__ . '/../controllers/UsersController.php';
 
 class PollsController {
 
+    public function canUserVote($pollId){
+
+        //Primero verifico que este dentro del rango
+        $pollModel = new PollsModel();
+        
+        $poll = $pollModel->getPollById($pollId);
+
+        //Luego veo si ya voto
+        $career = $_SESSION['career'];
+        $year = $_SESSION['year'];
+
+        $careers = json_decode( $poll['CAREERS'], true );
+        $years = json_decode( $poll['YEARS'], true );
+
+        if( ( in_array($career, $careers) || in_array("ALL", $careers) ) && ( in_array($year, $years) || in_array("ALL", $years) )  ){
+            return true;
+        } else return false;
+
+    }
+
+    public function validateVote(){
+        //var_dump($_POST);
+        $postData = $_POST;
+
+        //A todo lo que viene por post sumale 1 y guarda la info del votante
+
+        $userId = $_SESSION['legajo'] ?? null;
+        $pollId = $postData['idPoll'] ?? null;
+
+        if (!$userId || !$pollId) {
+            echo "<script> alert('Faltan datos requeridos') ;</script>";
+            echo "<script>window.location.href='?controller=views&action=home';</script>";
+
+        }
+
+        $votes = [];
+
+        foreach ($postData['candidatos'] ?? [] as $idCandidato) {
+            $votes[] = [
+                'ID_POLL' => $pollId,
+                'ID_CANDIDATE' => $idCandidato,
+                'ID_OPTION' => null,
+                'USER_IDENTIFIER' => $userId,
+                'STATUS' => 1
+            ];
+        }
+
+        foreach ($postData['opciones'] ?? [] as $idOpcion) {
+            $votes[] = [
+                'ID_POLL' => $pollId,
+                'ID_CANDIDATE' => null,
+                'ID_OPTION' => $idOpcion,
+                'USER_IDENTIFIER' => $userId,
+                'STATUS' => 1
+            ];
+        }
+
+
+    $newVotes = PollsModel::registVotes($votes);
+    
+    if($newVotes != false){
+        echo "<script>alert('Voto realizado');</script>";
+        echo "<script>window.location.href='?controller=views&action=home';</script>";
+    }
+
+
+    }
+
     public function deletePoll(){
 
         if (isset($_POST['idPoll'])) {
@@ -65,6 +133,38 @@ class PollsController {
         //Funcion que trae todas las encuestas disponibles 
     public function getLastestPolls($pollsCount){
         return PollsModel::getLastestPolls($pollsCount);
+    }
+
+        //Funcion que trae todas las encuestas disponibles 
+    public function getLastestPollsVoter($pollsCount){
+        $data['year'] = $_SESSION['year'];
+        
+        switch( $_SESSION['career'] ){
+            case "1":
+                $data['career'] = "sistemas";
+                $_SESSION['career'] = "sistemas";
+                break;
+            case "2":
+                $data['career'] = "laboratorio";
+                $_SESSION['career'] = "laboratorio";
+
+                break;
+
+            case "3":
+                $data['career'] = "ambiental";
+                $_SESSION['career'] = "ambiental";
+
+                break;
+
+            case "4":
+                $data['career'] = "contabilidad";
+                $_SESSION['career'] = "contabilidad";
+
+                break;
+
+        }
+
+        return PollsModel::getLastestPollsVoter($pollsCount, $data);
     }
 
 
@@ -305,25 +405,51 @@ class PollsController {
 
     }
 
+    public function didUserVote($user,$pollId){
+        $pollModel = new PollsModel();
+
+        $result = $pollModel->didUserVote($user,$pollId);
+
+        //var_dump( $result );
+
+        if( $result != 0 ){
+            return true;
+        } else {
+            return false;
+        }
+
+    }
+
     public function allowViewPoll($pollId, $userId){
+        //El usuario comun puede ver los resultados si ( YA VOTO || CERRO LA ENCUESTA ) && PUBLICA
+
         $pollModel = new PollsModel();
         
         //Traigo todos los datos de la encuesta
         $pollData = $pollModel->getPollById($pollId);
         
+        //var_dump( $pollData );
+
         //Comparo
-        //Verificar que se cumpla alguna de las condiciones: Ser admin, el creador, haber votado, resultados PUBLICOS 
+        //Verificar que se cumpla alguna de las condiciones: Ser admin/creator, ser el creador 
         if( $_SESSION['role'] == "ADMIN" || $_SESSION['role'] == "CREATOR" || $pollData['ID_USER'] == $userId ) {
             return true;
         }
 
-        //Si es publica, la muestro, sino ni con el voto la podes ver   
-        if ( $pollData['VISIBILITY'] == "PRIVATE" ) {
-            return false;
+        //Si la encuesta esta ya cerrada
+        if ( ($pollData['STATUS'] ==3) ){
+            return true;
         }
-        //VERIFICAR SI VOTO (PROXIMAMENTE)
 
-        return false;
+        $result = $this->didUserVote($_SESSION['legajo'], $pollId);
+        //var_dump( $result );
+
+        if( $result != 0 ){
+            return true;
+        } else { return false;}
+
+        
+
     }
 
     //Funcion encargada de verificar si el usuario es el dueño de la encuesta
