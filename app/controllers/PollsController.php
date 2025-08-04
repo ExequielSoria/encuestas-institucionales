@@ -471,7 +471,7 @@ class PollsController {
 
         //Comparo
         //Verificar que se cumpla alguna de las condiciones: Ser admin/creator, ser el creador 
-        if( $_SESSION['role'] == "ADMIN" || $_SESSION['role'] == "CREATOR" || $pollData['ID_USER'] == $userId ) {
+        if( $_SESSION['role'] == "ADMIN" || $_SESSION['role'] == "CREATOR" ) {
             return true;
         }
 

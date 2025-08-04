@@ -262,7 +262,7 @@ class ViewsController {
         $totalPolls = (int)$totalPolls;
 
         //Verifico que sea Admin, el creador, haber votado, resultados PUBLICOS
-        $isAllowed = $pollsController->allowViewPoll($pollId, $_SESSION['id']);
+        $isAllowed = $pollsController->allowViewPoll($pollId, $_SESSION['idVote']);
         
         //Primero verifico el id, para no buscar datos al pepe
         if( $pollId <= $totalPolls && $pollId > 0 ){
