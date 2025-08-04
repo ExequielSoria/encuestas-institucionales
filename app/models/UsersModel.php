@@ -61,29 +61,29 @@ class UsersModel {
         $stmt->execute([$username]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        var_dump($user);
+        //var_dump($user);
 
+        
         if ( ($user != false) && password_verify($password, $user["PASSWORD_HASH"])) {
             echo "Usuario verificado";
             return $user;
         } else {
             return false;
         }
-            
+  
     }
 
     public static function loginExternDB($username, $password) {
-        global $pdo;
+        global $pdoExtern;
         $sql = "SELECT * FROM `USERS` WHERE LEGAJO = ? AND DNI = ?;";
-        $stmt = $pdo->prepare($sql);
+        $stmt = $pdoExtern->prepare($sql);
         $stmt->execute([$username, $password]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($user != false ) {
             return $user;
         } else {
-            echo "naoanao";
-            var_dump($user);
+            //var_dump($user);
             return false;
         }
     }

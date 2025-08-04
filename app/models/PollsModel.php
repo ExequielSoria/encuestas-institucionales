@@ -28,6 +28,28 @@ class PollsModel {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function getLastestPollsVoter($pollsCount,$data){
+        global $pdo;
+
+        //var_dump( $data );
+
+        $career = $data['career'];
+        $year = $data['year'];
+        //Me aseguro que sea int la cantidad de encuestas a traer
+        $pollsCount = (int)$pollsCount;
+
+        $sql = "
+        SELECT * FROM POLLS 
+        WHERE STATUS != 0 
+        ORDER BY ID_POLL DESC 
+        LIMIT $pollsCount;
+        ";
+
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([$career,$year]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function getLastestPollsAdmin($pollsCount){
         global $pdo;
 

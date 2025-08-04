@@ -120,8 +120,8 @@ class UsersController {
                 $login = UsersModel::loginInternDB($username, $pass);
 
                 if ($login == false){
-                    echo "<script>alert('Usuario o contraseña incorrecto');</script>";
-                    echo "<script>window.location.href='?controller=views&action=login';</script>";
+                    echo "<script>alert('Usuario o contraseña incorrecto para el admin');</script>";
+                    //echo "<script>window.location.href='?controller=views&action=login';</script>";
                     var_dump($login);
 
                 } else {
@@ -142,7 +142,13 @@ class UsersController {
                 if( $login != false ){
                     $_SESSION['username'] = $login['FIRST_NAME']." ".$login['LAST_NAME'];
                     $_SESSION['id'] = $login['ID_USER'];
-                    $_SESSION['role'] = "USER";
+                    $_SESSION['legajo'] = $login['LEGAJO'];
+                    $_SESSION['career'] = $login['ID_CAREER'];
+                    $_SESSION['year'] = $login['ID_YEAR'];
+
+                    $_SESSION['role'] = "VOTER";
+
+                    //var_dump($login);
 
                     echo "<script>window.location.href='?controller=views&action=home';</script>";
                 

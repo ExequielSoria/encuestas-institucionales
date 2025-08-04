@@ -67,6 +67,38 @@ class PollsController {
         return PollsModel::getLastestPolls($pollsCount);
     }
 
+        //Funcion que trae todas las encuestas disponibles 
+    public function getLastestPollsVoter($pollsCount){
+        $data['year'] = $_SESSION['year'];
+        
+        switch( $_SESSION['career'] ){
+            case "1":
+                $data['career'] = "sistemas";
+                $_SESSION['career'] = "sistemas";
+                break;
+            case "2":
+                $data['career'] = "laboratorio";
+                $_SESSION['career'] = "laboratorio";
+
+                break;
+
+            case "3":
+                $data['career'] = "ambiental";
+                $_SESSION['career'] = "ambiental";
+
+                break;
+
+            case "4":
+                $data['career'] = "contabilidad";
+                $_SESSION['career'] = "contabilidad";
+
+                break;
+
+        }
+
+        return PollsModel::getLastestPollsVoter($pollsCount, $data);
+    }
+
 
     //El formulario de crear encuesta apunta a esta funcion
     public function editPoll(){

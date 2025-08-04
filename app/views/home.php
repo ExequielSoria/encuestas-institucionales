@@ -2,6 +2,7 @@
 session_start();    
 
 //var_dump($lastestPolls);
+//var_dump($_SESSION['career']);
 
 ?>
 
@@ -131,7 +132,14 @@ h2{
 
                 <?php endif; ?>
 
-            <a href="?controller=views&action=viewPoll&id=<?= $lastestPoll["ID_POLL"] ?>">Ver encuesta</a>
+            <a href="?controller=views&action=votePoll&id=<?= $lastestPoll["ID_POLL"] ?>">Votar</a>
+            <a href="?controller=views&action=viewPoll&id=<?= $lastestPoll["ID_POLL"] ?>">Ver resultados</a>
+
+            <!-- el peor pedazo de codigo que escribi jamas... a tener en cuenta para mejorarlo-->
+            <?php  if( ( in_array( "ALL" , json_decode( $lastestPoll['CAREERS'], true ) ) || in_array( $_SESSION['career'] , json_decode( $lastestPoll['CAREERS'], true ) ) ) && ( in_array( "ALL" , json_decode( $lastestPoll['YEARS'], true ) ) || in_array( $_SESSION['year'] , json_decode( $lastestPoll['YEARS'], true ) ) ) && $lastestPoll['STATUS'] != 2): ?>
+                <p>PODES VOTAR</p>
+            <?php endif;?>
+            
         </div>
         <?php endforeach; ?>
 </section>

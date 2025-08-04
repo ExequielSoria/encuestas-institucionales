@@ -251,13 +251,19 @@ class ViewsController {
         if (isset($_SESSION['username']) && $_SESSION['username'] != null) {
 
             if($_SESSION['role'] == "ADMIN"){
-                $lastestPolls = $pollsController->getLastestPollsAdmin(6);
+                $lastestPolls = $pollsController->getLastestPollsAdmin(9);
 
                 include_once './app/views/home.php';
             } else {
-                $lastestPolls = $pollsController->getLastestPolls(3);
-                include_once './app/views/home.php';
 
+                if( $_SESSION['role'] == "CREATOR" ){
+                    $lastestPolls = $pollsController->getLastestPolls(9);
+                    include_once './app/views/home.php';
+                    
+                } else {
+                    $lastestPolls = $pollsController->getLastestPollsVoter(9);
+                    include_once './app/views/home.php';                    
+                }
             }
 
         } else {
