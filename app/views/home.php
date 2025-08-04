@@ -5,12 +5,22 @@ session_start();
 //var_dump($_SESSION['career']);
 
 ?>
-
-<h1>Este es el home</h1>
-
 <h3>Bienvenido <?php echo $_SESSION['username']; ?> </h3>
-<p>Usuario N° <?php echo $_SESSION['id']; ?> </p>
-<p>Identificado como <?php echo $_SESSION['role']; ?> </p>
+
+<?php if($_SESSION['role'] == "ADMIN" ): ?>
+
+    <p>Usuario con ID <?php echo $_SESSION['id']; ?> </p>
+
+<?php endif; ?>
+
+<?php if($_SESSION['role'] == "VOTER" ): ?>
+
+    <p>Estudiante con ID <?php echo $_SESSION['idVoter']; ?> </p>
+
+<?php endif; ?>
+
+
+<p>Con rol de  <?php echo $_SESSION['role']; ?> </p>
 
 <a href="?controller=users&action=endSession">Cerrar sesión</a>
 

@@ -5,6 +5,95 @@ require_once './db/internDB.php';
 //Clase encargada de la gestion de las encuestas en la base de datos
 class PollsModel {
 
+    public static function votesCountCandidate($idCandidate) {
+    global $pdo;
+
+    $sql = "SELECT COUNT(*) as total FROM VOTES 
+            WHERE ID_CANDIDATE = ? AND STATUS = 1";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([$idCandidate]);
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    return $row ? $row['total'] : 0;
+}
+
+
+public static function votesCountOption($idOption) {
+    global $pdo;
+
+    $sql = "SELECT COUNT(*) as total FROM VOTES 
+            WHERE ID_OPTION = ? AND STATUS = 1";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([$idOption]);
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    return $row ? $row['total'] : 0;
+}
+
+    public static function didUserVote($user,$pollId){
+        global $pdo;
+
+        //var_dump( $pollId );
+
+        //Actualizo el STATE de 1 a 0
+        $sql = "SELECT COUNT(*) FROM VOTES WHERE USER_IDENTIFIER = ? AND ID_POLL = ? AND STATUS !='0';";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([$user,$pollId]);
+        return $stmt->fetchColumn() > 0;
+    }
+
+    public static function registVotes(array $votes) {
+        global $pdo;
+        
+        
+        if (empty($votes)) {
+            echo "<script>alert('No se enviaron votos');</script>";
+            return false;
+            echo "<script>window.location.href='?controller=views&action=home';</script>";
+        }
+        
+        $userId = $votes[0]['USER_IDENTIFIER'];
+        $pollId = $votes[0]['ID_POLL'];
+
+        // Verificar si ya votó en esa encuesta
+        $stmt = $pdo->prepare("
+            SELECT COUNT(*) FROM VOTES
+            WHERE USER_IDENTIFIER = :userId AND ID_POLL = :pollId AND STATUS = 1
+        ");
+        $stmt->execute([
+            ':userId' => $userId,
+            ':pollId' => $pollId
+        ]);
+
+        if ($stmt->fetchColumn() > 0) {
+            echo "<script>alert('Ya se registra un voto en la encuesta');</script>";
+            echo "<script>window.location.href='?controller=views&action=home';</script>";
+            return false;
+
+        }
+
+        // Insertar los votos
+        $pdo->beginTransaction();
+        $stmt = $pdo->prepare("
+            INSERT INTO VOTES (ID_POLL, ID_CANDIDATE, ID_OPTION, USER_IDENTIFIER, STATUS)
+            VALUES (:ID_POLL, :ID_CANDIDATE, :ID_OPTION, :USER_IDENTIFIER, :STATUS)
+        ");
+
+        foreach ($votes as $vote) {
+            $stmt->execute([
+                ':ID_POLL' => $vote['ID_POLL'],
+                ':ID_CANDIDATE' => $vote['ID_CANDIDATE'],
+                ':ID_OPTION' => $vote['ID_OPTION'],
+                ':USER_IDENTIFIER' => $vote['USER_IDENTIFIER'],
+                ':STATUS' => $vote['STATUS']
+            ]);
+        }
+
+        $pdo->commit();
+        return $stmt;
+    }
+
+
     public function deletePoll($pollId) {
         global $pdo;
 

@@ -1,5 +1,8 @@
 <?php
 
+//var_dump($candidatesData);
+
+//require_once __DIR__ . '/../models/PollsModels.php';
 
 //Validaciones de seguridad
 
@@ -135,7 +138,8 @@ if ( in_array('ALL', $pollData['CAREERS']) ){
         <p> <? echo $candidate['INFO_CANDIDATE']; ?> </p>
         <p> <? echo $candidate['CAREER_CANDIDATE']; ?> </p>
 
-        <h3> Votos: <? echo $candidate['VOTES_CANDIDATE']; ?> </h3> 
+        <h3>Votos: <?= $pollModel->votesCountCandidate($candidate['ID_CANDIDATE']) ?></h3>
+
     </div>
     <?php endforeach; ?>
 
@@ -144,7 +148,8 @@ if ( in_array('ALL', $pollData['CAREERS']) ){
 <div class="marco">
     <h3><? echo $option['TITLE_OPTION']; ?> </h3>
     <p> <? echo $option['INFO_OPTION']; ?> </p>
-    <h3> Votos: <? echo $option['VOTES_OPTION']; ?> </h3> 
+        <h3>Votos: <?= $pollModel->votesCountOption($option['ID_OPTION']) ?></h3>
+
 </div>
 <?php endforeach; ?>
 

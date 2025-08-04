@@ -141,7 +141,7 @@ class UsersController {
 
                 if( $login != false ){
                     $_SESSION['username'] = $login['FIRST_NAME']." ".$login['LAST_NAME'];
-                    $_SESSION['id'] = $login['ID_USER'];
+                    $_SESSION['idVoter'] = $login['ID_USER'];
                     $_SESSION['legajo'] = $login['LEGAJO'];
                     $_SESSION['career'] = $login['ID_CAREER'];
                     $_SESSION['year'] = $login['ID_YEAR'];
