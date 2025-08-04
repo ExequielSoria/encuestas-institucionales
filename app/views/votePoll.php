@@ -1,5 +1,7 @@
 <?php
 
+
+
 //Validaciones de seguridad
 
 //var_dump($pollData);
@@ -8,7 +10,6 @@
 
 //Preparo la fecha
 $closeDate = $pollData['END_DATE'];
-
 //Convierto a timestamp
 $timestamp_close = strtotime($closeDate);
 
@@ -24,6 +25,8 @@ if ($pollData['MULTIPLE_CHOICE'] == 1) {
 
 } else {
     $pollData['MULTIPLE_CHOICE'] = "Una sola eleccion";
+
+
 }
 
 //Preparo los datos que vienen como string
@@ -129,10 +132,11 @@ if ( in_array('ALL', $pollData['CAREERS']) ){
             <label>
                 <input 
                     type="<?= $isMultipleChoice ? 'checkbox' : 'radio' ?>" 
-                    name="<?= $isMultipleChoice ? 'candidatos[]' : 'sigleChoice' ?>" 
-                    value="<?= $candidate['ID_CANDIDATE'] ?>">
+                    name="<?= $isMultipleChoice ? 'candidatos[]' : 'singleChoice' ?>" 
+                    value="<?= $isMultipleChoice ? $candidate['ID_CANDIDATE'] : 'candidate|' . $candidate['ID_CANDIDATE'] ?>">
                 <?= $candidate['NAME_CANDIDATE'] ?>
             </label>
+
             <p><?= $candidate['INFO_CANDIDATE'] ?></p>
             <p><?= $candidate['CAREER_CANDIDATE'] ?></p>
         </div>
@@ -144,8 +148,8 @@ if ( in_array('ALL', $pollData['CAREERS']) ){
             <label>
                 <input 
                     type="<?= $isMultipleChoice ? 'checkbox' : 'radio' ?>" 
-                    name="<?= $isMultipleChoice ? 'opciones[]' : 'sigleChoice' ?>" 
-                    value="<?= $option['ID_OPTION'] ?>">
+                    name="<?= $isMultipleChoice ? 'opciones[]' : 'singleChoice' ?>" 
+                    value="<?= $isMultipleChoice ?  $option['ID_OPTION'] : 'option|' . $option['ID_OPTION'] ?>">
                 <?= $option['TITLE_OPTION'] ?>
             </label>
             <p><?= $option['INFO_OPTION'] ?></p>
@@ -153,8 +157,11 @@ if ( in_array('ALL', $pollData['CAREERS']) ){
     <?php endforeach; ?>
 
     <input type="hidden" name="idPoll" value="<?= htmlspecialchars($pollData['ID_POLL'] ?? '') ?>">
+        
 
-
+    <input type="checkbox" name="publicUsername">Hacer visible mi voto (Nombre y apellido)
+    <br>
+    <br>
     <button type="submit">Votar</button>
 </form>
 
