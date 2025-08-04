@@ -124,8 +124,6 @@ class UsersController {
                     echo "<script>window.location.href='?controller=views&action=login';</script>";
                     var_dump($login);
 
-
-
                 } else {
 
                     $_SESSION['username'] = $login['USERNAME'];
@@ -138,7 +136,20 @@ class UsersController {
 
             } else { 
                 $login = UsersModel::loginExternDB($username, $pass);
-                //var_dump($login);
+                
+                //var_dump( $login );
+
+                if( $login != false ){
+                    $_SESSION['username'] = $login['FIRST_NAME']." ".$login['LAST_NAME'];
+                    $_SESSION['id'] = $login['ID_USER'];
+                    $_SESSION['role'] = "USER";
+
+                    echo "<script>window.location.href='?controller=views&action=home';</script>";
+                
+
+                } else {                     
+                    echo "<script>alert('Usuario o contraseña incorrecto');</script>";
+                    echo "<script>window.location.href='?controller=views&action=login';</script>";}
                 
             }
 

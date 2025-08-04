@@ -1,6 +1,7 @@
 <?php
 
 require_once './db/internDB.php';
+require_once './db/externDB.php';
 
 //Clase encargada de gestionar las acciones sobre los usuarios en la base de datos
 class UsersModel {
@@ -73,14 +74,16 @@ class UsersModel {
 
     public static function loginExternDB($username, $password) {
         global $pdo;
-        $sql = "SELECT * FROM USERS WHERE username = ?";
+        $sql = "SELECT * FROM `USERS` WHERE LEGAJO = ? AND DNI = ?;";
         $stmt = $pdo->prepare($sql);
-        $stmt->execute([$username]);
+        $stmt->execute([$username, $password]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if ($user && password_verify($password, $user['PASSWORD_HASH'])) {
+        if ($user != false ) {
             return $user;
         } else {
+            echo "naoanao";
+            var_dump($user);
             return false;
         }
     }
