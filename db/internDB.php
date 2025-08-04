@@ -15,6 +15,9 @@ $dbname = $_ENV['DATABASE_NAME'];
 $user = $_ENV['MYSQL_USER'];
 $pass = $_ENV['MYSQL_PASS'];
 
+
+
+
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $user, $pass);
 } catch (PDOException $e) {
