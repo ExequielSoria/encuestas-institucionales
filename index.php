@@ -2,6 +2,8 @@
 //Inicio la sesion para guardar la info del usuario y el rol
 session_start();
 
+
+
 //Capturo los datos de la url que me sirven para defirnir el controlador y la accion
 // Si no, se asignan valores por defecto
 $controller = $_GET['controller'] ?? 'users';

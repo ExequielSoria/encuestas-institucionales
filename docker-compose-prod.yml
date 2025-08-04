@@ -1,0 +1,19 @@
+version: '3'
+services:
+
+  php:
+    build: ./
+    container_name: php
+    ports:
+     - "${PHP_PORT}:80"
+    env_file: .env
+    volumes:
+     - ./:/var/www/html:rw
+#    command: php -S 0.0.0.0:80 ./core/routerScript.php
+    networks:
+      - network1
+
+networks:
+  network1:
+    name: ${DOCKER_NETWORK}
+    external: true
