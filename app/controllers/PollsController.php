@@ -26,92 +26,108 @@ class PollsController {
 
     }
 
+
     public function validateVote(){
-        var_dump($_POST);
+        //var_dump($_POST);
         $postData = $_POST;
-
-        //A todo lo que viene por post sumale 1 y guarda la info del votante
-
-        if( $postData['publicUsername'] || $_SESSION['role'] == "CREATOR" ){
-
-            $publicUsername = $_SESSION['username'];
-
-        }
-
+        
         $userId = $_SESSION['legajo'] ?? null;
         $pollId = $postData['idPoll'] ?? null;
 
-        if (!$userId || !$pollId) {
-            echo "<script> alert('Faltan datos requeridos') ;</script>";
-            echo "<script>window.location.href='?controller=views&action=home';</script>";
+        $pollModel = new PollsModel();
 
-        }
+        $poll = $pollModel->getPollById($pollId);
 
-        $votes = [];
+        $pollStatus = $pollModel->isPollAvailable($pollId);
 
-        foreach ($postData['candidatos'] ?? [] as $idCandidato) {
-            $votes[] = [
-                'ID_POLL' => $pollId,
-                'ID_CANDIDATE' => $idCandidato,
-                'ID_OPTION' => null,
-                'USER_IDENTIFIER' => $userId,
-                'USERNAME' => $publicUsername,
-                'STATUS' => 1
-            ];
-        }
+        if( $pollStatus != 3 ){
 
-        foreach ($postData['opciones'] ?? [] as $idOpcion) {
-            $votes[] = [
-                'ID_POLL' => $pollId,
-                'ID_CANDIDATE' => null,
-                'ID_OPTION' => $idOpcion,
-                'USER_IDENTIFIER' => $userId,
-                'USERNAME' => $publicUsername,
-                'STATUS' => 1
-            ];
-        }
+            //A todo lo que viene por post sumale 1 y guarda la info del votante
 
-        //var_dump($postData['singleCandidateChoice']);
-        //var_dump( $postData['singleChoice'] );
-        
-        if($postData['singleChoice']){
-            $params = explode('|', $postData['singleChoice']);
-            //var_dump($params);
+            if( $postData['publicUsername'] || $_SESSION['role'] == "CREATOR" ){
 
-            if( in_array("candidate",$params) ){
+                $publicUsername = $_SESSION['username'];
 
+            }
+
+            if (!$userId || !$pollId) {
+                echo "<script> alert('Faltan datos requeridos') ;</script>";
+                echo "<script>window.location.href='?controller=views&action=home';</script>";
+
+            }
+
+            $votes = [];
+
+            foreach ($postData['candidatos'] ?? [] as $idCandidato) {
                 $votes[] = [
                     'ID_POLL' => $pollId,
-                    'ID_CANDIDATE' => $params[1],
+                    'ID_CANDIDATE' => $idCandidato,
                     'ID_OPTION' => null,
                     'USER_IDENTIFIER' => $userId,
                     'USERNAME' => $publicUsername,
                     'STATUS' => 1
-                    ];
-            } else{
-
-           $votes[] = [
-                'ID_POLL' => $pollId,
-                'ID_CANDIDATE' => null,
-                'ID_OPTION' => $params[1],
-                'USER_IDENTIFIER' => $userId,
-                'USERNAME' => $publicUsername,
-                'STATUS' => 1
                 ];
             }
+
+            foreach ($postData['opciones'] ?? [] as $idOpcion) {
+                $votes[] = [
+                    'ID_POLL' => $pollId,
+                    'ID_CANDIDATE' => null,
+                    'ID_OPTION' => $idOpcion,
+                    'USER_IDENTIFIER' => $userId,
+                    'USERNAME' => $publicUsername,
+                    'STATUS' => 1
+                ];
+            }
+
+            //var_dump($postData['singleCandidateChoice']);
+            //var_dump( $postData['singleChoice'] );
+            
+            if($postData['singleChoice']){
+                $params = explode('|', $postData['singleChoice']);
+                //var_dump($params);
+
+                if( in_array("candidate",$params) ){
+
+                    $votes[] = [
+                        'ID_POLL' => $pollId,
+                        'ID_CANDIDATE' => $params[1],
+                        'ID_OPTION' => null,
+                        'USER_IDENTIFIER' => $userId,
+                        'USERNAME' => $publicUsername,
+                        'STATUS' => 1
+                        ];
+                } else{
+
+            $votes[] = [
+                    'ID_POLL' => $pollId,
+                    'ID_CANDIDATE' => null,
+                    'ID_OPTION' => $params[1],
+                    'USER_IDENTIFIER' => $userId,
+                    'USERNAME' => $publicUsername,
+                    'STATUS' => 1
+                    ];
+                }
+            }
+
+            //var_dump( $votes );
+
+
+
+            $newVotes = PollsModel::registVotes($votes);
+            
+            if($newVotes != false){
+                echo "<script>alert('Voto realizado');</script>";
+                echo "<script>window.location.href='?controller=views&action=home';</script>";
+                
+            }
+        } else {
+            echo "<script>alert('Encuesta cerrada, ya no se aceptan votos');</script>";
+            echo "<script>window.location.href='?controller=views&action=home';</script>";
         }
-
-    //var_dump( $votes );
-
-    $newVotes = PollsModel::registVotes($votes);
-    
-    if($newVotes != false){
-        echo "<script>alert('Voto realizado');</script>";
-        echo "<script>window.location.href='?controller=views&action=home';</script>";
+        
     }
 
-
-    }
 
     public function deletePoll(){
 

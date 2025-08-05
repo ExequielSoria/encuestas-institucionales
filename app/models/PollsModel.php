@@ -5,6 +5,15 @@ require_once './db/internDB.php';
 //Clase encargada de la gestion de las encuestas en la base de datos
 class PollsModel {
 
+    public function isPollAvailable($pollId){
+        global $pdo;
+        $sql = "SELECT STATUS FROM POLLS WHERE ID_POLL = ? LIMIT 1;";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([$pollId]);
+        $status = $stmt->fetchColumn();
+        return $status;
+    }
+
     public static function votesCountCandidate($idCandidate) {
     global $pdo;
 
@@ -68,10 +77,8 @@ public static function publicVotesOption($idOption) {
 
         global $pdo;
         
-        
         if (empty($votes)) {
             echo "<script>alert('No se enviaron votos');</script>";
-            return false;
             echo "<script>window.location.href='?controller=views&action=home';</script>";
         }
         
@@ -153,7 +160,7 @@ public static function publicVotesOption($idOption) {
 
         $sql = "
         SELECT * FROM POLLS 
-        WHERE STATUS != 0 
+        WHERE STATUS != 0 AND STATUS !=2
         ORDER BY ID_POLL DESC 
         LIMIT $pollsCount;
         ";
