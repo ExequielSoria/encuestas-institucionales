@@ -1,7 +1,4 @@
 <?php
-
-
-
 //Validaciones de seguridad
 
 //var_dump($pollData);

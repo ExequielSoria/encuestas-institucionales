@@ -43,9 +43,20 @@
                 <p><?= htmlspecialchars($userPoll["DESCRIPTION"]) ?></p>
             <?php endif; ?>
 
-            <p> Cierra el <?= date("d/m/y", strtotime($userPoll["END_DATE"])) ?> </p>
+            <?php if( $userPoll["STATUS"] == 3 ) : ?>
+                <p> ENCUESTA CERRADA </p>
+            <?php endif; ?>
 
-            <a href="?controller=views&action=viewPoll&id=<?= $userPoll["ID_POLL"] ?>">Ver encuesta</a>
+            <?php if( $userPoll["STATUS"] != 3 ) : ?>
+                <p> Cierra el <?= date("d/m/y", strtotime($userPoll["END_DATE"])) ?> </p>
+            <?php endif; ?>
+
+            <a href="?controller=views&action=viewPoll&id=<?= $userPoll["ID_POLL"] ?>">Ver resultados</a>
+
+            <?php  if( ( in_array( "ALL" , json_decode( $userPoll['CAREERS'], true ) ) || in_array( $_SESSION['career'] , json_decode( $userPoll['CAREERS'], true ) ) ) && ( in_array( "ALL" , json_decode( $userPoll['YEARS'], true ) ) || in_array( $_SESSION['year'] , json_decode( $userPoll['YEARS'], true ) ) ) && $userPoll['STATUS'] != 3): ?>
+                <p>PODES VOTAR</p>
+            <?php endif;?>
+
         </div>
         <?php endforeach; ?>
 </section>

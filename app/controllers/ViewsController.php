@@ -268,10 +268,23 @@ class ViewsController {
         if( $pollId <= $totalPolls && $pollId > 0 ){
 
             if($isAllowed == true){
+
+
+
                 //Instancio los modelos y traigo datos, colta
                 $pollModel = new PollsModel();
     
                 $pollData = $pollModel->getPollById($pollId);
+
+                if( $pollData['VISIBILITY'] == "private" ) {
+
+                    if( $_SESSION['role'] == "VOTER" ) {
+                        echo " <script>alert('Los resultados de esta encuesta son privados');</script> ";
+                        echo "<script> window.location.href='?controller=views&action=home'</script>";  
+                    }
+ 
+                }
+
                 $optionsData = $pollModel->getOptionsByPollId($pollId);
                 $candidatesData = $pollModel->getCandidatesByPollId($pollId);
     
@@ -280,13 +293,9 @@ class ViewsController {
     
                 require_once './app/views/viewPoll.php';
             } else {            
-            echo " <script>alert('No podes ver esta encuesta');</script> ";
-            echo "<script> window.location.href='?controller=views&action=home'</script>";
-
-            
+            echo " <script>alert('No podes ver esta encuesta sin votar');</script> ";
+            echo "<script> window.location.href='?controller=views&action=home'</script>";   
         }
-
-
 
         } else {            
             echo " <script>alert('Esa encuesta no existe');</script> ";
