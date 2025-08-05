@@ -51,6 +51,9 @@
                 <p> Cierra el <?= date("d/m/y", strtotime($userPoll["END_DATE"])) ?> </p>
             <?php endif; ?>
 
+            <a href="?controller=views&action=votePoll&id=<?= $userPoll["ID_POLL"] ?>">Votar</a>
+
+
             <a href="?controller=views&action=viewPoll&id=<?= $userPoll["ID_POLL"] ?>">Ver resultados</a>
 
             <?php  if( ( in_array( "ALL" , json_decode( $userPoll['CAREERS'], true ) ) || in_array( $_SESSION['career'] , json_decode( $userPoll['CAREERS'], true ) ) ) && ( in_array( "ALL" , json_decode( $userPoll['YEARS'], true ) ) || in_array( $_SESSION['year'] , json_decode( $userPoll['YEARS'], true ) ) ) && $userPoll['STATUS'] != 3): ?>
