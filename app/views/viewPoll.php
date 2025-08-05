@@ -150,6 +150,7 @@ if ( in_array('ALL', $pollData['CAREERS']) ){
 <div class="marco">
     <h3><? echo $option['TITLE_OPTION']; ?> </h3>
     <p> <? echo $option['INFO_OPTION']; ?> </p>
+        <h3>Votos: <?= $pollModel->votesCountOption($option['ID_OPTION']) ?></h3>
         <h3>Votantes publicos</h3>
         <p><? echo implode(' , ', $pollModel->publicVotesOption($option['ID_OPTION']) )  ;?></p>
 
