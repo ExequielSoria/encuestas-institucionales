@@ -120,7 +120,7 @@ if ( in_array('ALL', $pollData['CAREERS']) ){
 
     <h3><? echo $pollData['MULTIPLE_CHOICE'];?> </h3>
 
-    <?php if ($_SESSION['role'] == "ADMIN" || $creatorData['ID_USER'] == $_SESSION['id']): ?>
+    <?php if (  $_SESSION['role'] == "ADMIN" || (  $creatorData['ID_USER'] == $_SESSION['id'] && $_SESSION['role'] == "CREATOR"  )  ): ?>
     <a href="?controller=Views&action=editPoll&id=<? echo $pollData['ID_POLL']; ?>">Editar encuesta</a>
     <br>
     <a href="?controller=Views&action=deletePoll&id=<? echo $pollData['ID_POLL']; ?>">Borrar encuesta</a>
@@ -139,6 +139,8 @@ if ( in_array('ALL', $pollData['CAREERS']) ){
         <p> <? echo $candidate['CAREER_CANDIDATE']; ?> </p>
 
         <h3>Votos: <?= $pollModel->votesCountCandidate($candidate['ID_CANDIDATE']) ?></h3>
+        <h3>Votantes publicos</h3>
+        <p><? echo implode(' , ', $pollModel->publicVotesCandidate($candidate['ID_CANDIDATE']) )  ;?></p>
 
     </div>
     <?php endforeach; ?>
@@ -149,6 +151,8 @@ if ( in_array('ALL', $pollData['CAREERS']) ){
     <h3><? echo $option['TITLE_OPTION']; ?> </h3>
     <p> <? echo $option['INFO_OPTION']; ?> </p>
         <h3>Votos: <?= $pollModel->votesCountOption($option['ID_OPTION']) ?></h3>
+        <h3>Votantes publicos</h3>
+        <p><? echo implode(' , ', $pollModel->publicVotesOption($option['ID_OPTION']) )  ;?></p>
 
 </div>
 <?php endforeach; ?>

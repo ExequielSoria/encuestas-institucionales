@@ -121,7 +121,7 @@ class UsersController {
 
                 if ($login == false){
                     echo "<script>alert('Usuario o contraseña incorrecto para el admin');</script>";
-                    //echo "<script>window.location.href='?controller=views&action=login';</script>";
+                    echo "<script>window.location.href='?controller=views&action=login';</script>";
                     var_dump($login);
 
                 } else {
@@ -141,6 +141,7 @@ class UsersController {
 
                 if( $login != false ){
                     $_SESSION['username'] = $login['FIRST_NAME']." ".$login['LAST_NAME'];
+                    $_SESSION['id'] = null ;
                     $_SESSION['idVoter'] = $login['ID_USER'];
                     $_SESSION['legajo'] = $login['LEGAJO'];
                     $_SESSION['career'] = $login['ID_CAREER'];

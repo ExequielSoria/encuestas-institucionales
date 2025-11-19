@@ -5,6 +5,15 @@ require_once './db/internDB.php';
 //Clase encargada de la gestion de las encuestas en la base de datos
 class PollsModel {
 
+    public function isPollAvailable($pollId){
+        global $pdo;
+        $sql = "SELECT STATUS FROM POLLS WHERE ID_POLL = ? LIMIT 1;";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([$pollId]);
+        $status = $stmt->fetchColumn();
+        return $status;
+    }
+
     public static function votesCountCandidate($idCandidate) {
     global $pdo;
 
@@ -30,6 +39,26 @@ public static function votesCountOption($idOption) {
     return $row ? $row['total'] : 0;
 }
 
+public static function publicVotesCandidate($idCandidate) {
+    global $pdo;
+
+    $sql = "SELECT USERNAME FROM VOTES WHERE ID_CANDIDATE = ? AND STATUS = 1";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([$idCandidate]);
+    return $stmt->fetchAll(PDO::FETCH_COLUMN);
+}
+
+public static function publicVotesOption($idOption) {
+    global $pdo;
+
+    $sql = "SELECT USERNAME FROM VOTES WHERE ID_OPTION = ? AND STATUS = 1";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([$idOption]);
+    return $stmt->fetchAll(PDO::FETCH_COLUMN);
+}
+
+
+
     public static function didUserVote($user,$pollId){
         global $pdo;
 
@@ -43,12 +72,13 @@ public static function votesCountOption($idOption) {
     }
 
     public static function registVotes(array $votes) {
+
+        //var_dump($votes);
+
         global $pdo;
-        
         
         if (empty($votes)) {
             echo "<script>alert('No se enviaron votos');</script>";
-            return false;
             echo "<script>window.location.href='?controller=views&action=home';</script>";
         }
         
@@ -75,8 +105,8 @@ public static function votesCountOption($idOption) {
         // Insertar los votos
         $pdo->beginTransaction();
         $stmt = $pdo->prepare("
-            INSERT INTO VOTES (ID_POLL, ID_CANDIDATE, ID_OPTION, USER_IDENTIFIER, STATUS)
-            VALUES (:ID_POLL, :ID_CANDIDATE, :ID_OPTION, :USER_IDENTIFIER, :STATUS)
+            INSERT INTO VOTES (ID_POLL, ID_CANDIDATE, ID_OPTION, USER_IDENTIFIER, STATUS, USERNAME)
+            VALUES (:ID_POLL, :ID_CANDIDATE, :ID_OPTION, :USER_IDENTIFIER, :STATUS, :USERNAME)
         ");
 
         foreach ($votes as $vote) {
@@ -85,7 +115,8 @@ public static function votesCountOption($idOption) {
                 ':ID_CANDIDATE' => $vote['ID_CANDIDATE'],
                 ':ID_OPTION' => $vote['ID_OPTION'],
                 ':USER_IDENTIFIER' => $vote['USER_IDENTIFIER'],
-                ':STATUS' => $vote['STATUS']
+                ':STATUS' => $vote['STATUS'],
+                ':USERNAME' => $vote['USERNAME']
             ]);
         }
 
@@ -129,7 +160,7 @@ public static function votesCountOption($idOption) {
 
         $sql = "
         SELECT * FROM POLLS 
-        WHERE STATUS != 0 
+        WHERE STATUS != 0 AND STATUS !=2
         ORDER BY ID_POLL DESC 
         LIMIT $pollsCount;
         ";

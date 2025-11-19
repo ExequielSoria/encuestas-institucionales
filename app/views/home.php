@@ -5,6 +5,13 @@ session_start();
 //var_dump($_SESSION['career']);
 
 ?>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio</title>
+
 <h3>Bienvenido <?php echo $_SESSION['username']; ?> </h3>
 
 <?php if($_SESSION['role'] == "ADMIN" ): ?>
@@ -134,7 +141,14 @@ h2{
                 <p><?= htmlspecialchars($lastestPoll["DESCRIPTION"]) ?></p>
             <?php endif; ?>
 
-            <p> Cierra el <?= date("d/m/y", strtotime($lastestPoll["END_DATE"])) ?> </p>
+            <?php if( $lastestPoll["STATUS"] == 3 ) : ?>
+                <p> ENCUESTA CERRADA </p>
+            <?php endif; ?>
+
+            <?php if( $lastestPoll["STATUS"] != 3 ) : ?>
+                <p> Cierra el <?= date("d/m/y", strtotime($lastestPoll["END_DATE"])) ?> </p>
+            <?php endif; ?>
+                
 
                 <?php if ( $_SESSION['role'] == "ADMIN" ) : ?>
 
@@ -146,7 +160,7 @@ h2{
             <a href="?controller=views&action=viewPoll&id=<?= $lastestPoll["ID_POLL"] ?>">Ver resultados</a>
 
             <!-- el peor pedazo de codigo que escribi jamas... a tener en cuenta para mejorarlo-->
-            <?php  if( ( in_array( "ALL" , json_decode( $lastestPoll['CAREERS'], true ) ) || in_array( $_SESSION['career'] , json_decode( $lastestPoll['CAREERS'], true ) ) ) && ( in_array( "ALL" , json_decode( $lastestPoll['YEARS'], true ) ) || in_array( $_SESSION['year'] , json_decode( $lastestPoll['YEARS'], true ) ) ) && $lastestPoll['STATUS'] != 2): ?>
+            <?php  if( ( in_array( "ALL" , json_decode( $lastestPoll['CAREERS'], true ) ) || in_array( $_SESSION['career'] , json_decode( $lastestPoll['CAREERS'], true ) ) ) && ( in_array( "ALL" , json_decode( $lastestPoll['YEARS'], true ) ) || in_array( $_SESSION['year'] , json_decode( $lastestPoll['YEARS'], true ) ) ) && $lastestPoll['STATUS'] != 3): ?>
                 <p>PODES VOTAR</p>
             <?php endif;?>
             
