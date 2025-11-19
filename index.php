@@ -3,11 +3,10 @@
 session_start();
 
 
-
 //Capturo los datos de la url que me sirven para defirnir el controlador y la accion
-// Si no, se asignan valores por defecto
-$controller = $_GET['controller'] ?? 'users';
-$action = $_GET['action'] ?? 'login';
+// Si no, se asignan valores por defecto el home y si no esta logeado lo manda al login
+$controller = $_GET['controller'] ?? 'views';
+$action = $_GET['action'] ?? 'home';
 
 // Capturo cualquier parametro extra con $_GET
 $params = $_GET;

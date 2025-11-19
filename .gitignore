@@ -4,3 +4,4 @@ mysql/*.*
 mysql/ib*
 mysql/*/
 !mysql/.gitkeep
+/anotaciones
